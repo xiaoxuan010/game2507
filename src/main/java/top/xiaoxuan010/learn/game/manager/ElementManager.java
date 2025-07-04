@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import top.xiaoxuan010.learn.game.element.ElementObj;
+import top.xiaoxuan010.learn.game.element.GameElement;
 
 @Getter
 public class ElementManager {
@@ -23,9 +23,9 @@ public class ElementManager {
         init();
     }
 
-    private Map<GameElementType, List<ElementObj>> gameElements;
+    private Map<GameElementType, List<GameElement>> gameElements;
 
-    public void addElement(ElementObj element, GameElementType elementType) {
+    public void addElement(GameElement element, GameElementType elementType) {
         if (gameElements.containsKey(elementType)) {
             gameElements.get(elementType).add(element);
         } else {
@@ -33,7 +33,7 @@ public class ElementManager {
         }
     }
 
-    public List<ElementObj> getElementsByType(GameElementType elementType) {
+    public List<GameElement> getElementsByType(GameElementType elementType) {
         if (gameElements.containsKey(elementType)) {
             return gameElements.get(elementType);
         } else {
@@ -42,10 +42,10 @@ public class ElementManager {
     }
 
     public void init() {
-        gameElements = new HashMap<GameElementType, List<ElementObj>>();
-        gameElements.put(GameElementType.PLAYER, new ArrayList<ElementObj>());
-        gameElements.put(GameElementType.MAP, new ArrayList<ElementObj>());
-        gameElements.put(GameElementType.ENEMY, new ArrayList<ElementObj>());
-        gameElements.put(GameElementType.BOSS, new ArrayList<ElementObj>());
+        gameElements = new HashMap<GameElementType, List<GameElement>>();
+        for (GameElementType type : GameElementType.values()) {
+            gameElements.put(type, new ArrayList<GameElement>());
+        }
+
     }
 }

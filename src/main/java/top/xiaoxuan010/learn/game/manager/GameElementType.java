@@ -5,8 +5,8 @@ package top.xiaoxuan010.learn.game.manager;
  * 包括玩家、地图、敌人和Boss等。
  */
 public enum GameElementType {
-    PLAYER,
     MAP,
+    PLAYER,
     ENEMY,
     BOSS
 }

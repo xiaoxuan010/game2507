@@ -54,5 +54,12 @@ public class GameFrame extends JFrame {
             gameThread.start();
         }
         this.setVisible(true);
+        if (this.gamePanel instanceof Runnable) {
+            gameThread = new Thread((Runnable) this.gamePanel);
+            gameThread.start();
+        } else {
+            System.out.println("GamePanel" + gamePanel.getClass().getName()
+                    + " does not implement Runnable, cannot start game thread.");
+        }
     }
 }
