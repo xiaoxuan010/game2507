@@ -28,7 +28,7 @@ public class GameListener implements KeyListener {
         } else {
             keySet.add(keyCode);
             elementManager.getElementsByType(GameElementType.PLAYER).forEach(player -> {
-                player.keyClicked(keySet);
+                player.keyUpdated(keySet);
             });
         }
     }
@@ -40,7 +40,7 @@ public class GameListener implements KeyListener {
         if (keySet.contains(keyCode)) {
             keySet.remove(keyCode);
             elementManager.getElementsByType(GameElementType.PLAYER).forEach(player -> {
-                player.keyClicked(keySet);
+                player.keyUpdated(keySet);
             });
         } else {
             // 如果按键没有被按下，则不处理松开的事件

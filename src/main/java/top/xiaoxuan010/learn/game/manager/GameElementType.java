@@ -8,5 +8,6 @@ public enum GameElementType {
     MAP,
     PLAYER,
     ENEMY,
-    BOSS
+    BOSS,
+    BULLET,
 }

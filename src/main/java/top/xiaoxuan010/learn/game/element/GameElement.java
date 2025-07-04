@@ -17,6 +17,8 @@ public abstract class GameElement {
     private int height;
     private ImageIcon icon;
 
+    private boolean isAlive = true;
+
     public GameElement(int x, int y, int width, int height, ImageIcon icon) {
         this.x = x;
         this.y = y;
@@ -44,7 +46,7 @@ public abstract class GameElement {
      *
      * @param keySet 当前被点击的按键集合，包含所有被按下的键的键码。
      */
-    public void keyClicked(Set<Integer> keySet) {
+    public void keyUpdated(Set<Integer> keySet) {
         // 无默认实现
     }
 
@@ -59,7 +61,7 @@ public abstract class GameElement {
     }
 
     protected void add() {
-        // TODO Auto-generated method stub
+        // 无默认实现
     }
 
     protected void updateImage() {
