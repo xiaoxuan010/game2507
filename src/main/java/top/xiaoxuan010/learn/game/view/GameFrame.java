@@ -1,4 +1,4 @@
-package top.xiaoxuan010.learn.game.show;
+package top.xiaoxuan010.learn.game.view;
 
 import java.awt.event.KeyListener;
 

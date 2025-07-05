@@ -31,7 +31,7 @@ public class Player extends GameElement {
     }
 
     @Override
-    public void showElement(Graphics g) {
+    public void draw(Graphics g) {
         g.drawImage(getIcon().getImage(), getX(), getY(), getWidth(), getHeight(), null);
     }
 
@@ -70,18 +70,18 @@ public class Player extends GameElement {
     }
 
     @Override
-    public void move() {
+    public void updatePosition() {
         this.setX(Math.min(Math.max(0, this.getX() + (int) this.getSpeedX()), 720 - this.getWidth()));
         this.setY(Math.min(Math.max(0, this.getY() + (int) this.getSpeedY()), 480 - this.getHeight()));
     }
 
     @Override
-    protected void updateImage() {
+    protected void refreshIcon() {
         this.setIcon(GameLoad.imgMap.get(direction));
     }
 
     @Override
-    protected void add() {
+    protected void fire() {
         if (!this.isFiring()) {
             return;
         } else {

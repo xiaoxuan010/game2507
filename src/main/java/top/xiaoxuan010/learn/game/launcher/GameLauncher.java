@@ -2,8 +2,8 @@ package top.xiaoxuan010.learn.game.launcher;
 
 import top.xiaoxuan010.learn.game.controller.GameListener;
 import top.xiaoxuan010.learn.game.controller.GameMainThread;
-import top.xiaoxuan010.learn.game.show.GameFrame;
-import top.xiaoxuan010.learn.game.show.GameMainPanel;
+import top.xiaoxuan010.learn.game.view.GameFrame;
+import top.xiaoxuan010.learn.game.view.GameMainPanel;
 
 public class GameLauncher {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package top.xiaoxuan010.learn.game.show;
+package top.xiaoxuan010.learn.game.view;
 
 import java.awt.Graphics;
 
@@ -25,7 +25,7 @@ public class GameMainPanel extends JPanel implements Runnable {
         for (GameElementType elementType : GameElementType.values()) {
             elementManager.getElementsByType(elementType).forEach(element -> {
                 if (element != null) {
-                    element.showElement(g);
+                    element.draw(g);
                 }
             });
         }

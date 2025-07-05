@@ -1,6 +1,7 @@
 package top.xiaoxuan010.learn.game.element;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
@@ -27,7 +28,7 @@ public abstract class GameElement {
         this.icon = icon;
     }
 
-    public abstract void showElement(Graphics g);
+    public abstract void draw(Graphics g);
 
     /**
      * 当按键被点击时调用的方法。
@@ -50,22 +51,41 @@ public abstract class GameElement {
         // 无默认实现
     }
 
-    public final void model() {
-        updateImage();
-        move();
-        add();
+    public final void updateStatus() {
+        refreshIcon();
+        updatePosition();
+        fire();
     }
 
-    protected void move() {
+    protected void updatePosition() {
         // 无默认实现
     }
 
-    protected void add() {
+    protected void fire() {
         // 无默认实现
     }
 
-    protected void updateImage() {
+    protected void refreshIcon() {
+        // 无默认实现
+    }
 
+    /*
+     * 获取对象的碰撞箱
+     * 
+     * @return 碰撞箱矩形
+     */
+    public Rectangle getRectangle() {
+        return new Rectangle(x, y, width, height);
+    }
+
+    /**
+     * 碰撞检测
+     * 
+     * @param other 另一个游戏元素
+     * @return 如果与另一个游戏元素发生碰撞，则返回true，否则返回false
+     */
+    public boolean isCollided(GameElement other) {
+        return this.getRectangle().intersects(other.getRectangle());
     }
 
 }

@@ -60,13 +60,13 @@ public class Bullet extends GameElement {
     }
 
     @Override
-    public void showElement(Graphics g) {
+    public void draw(Graphics g) {
         g.setColor(Color.BLACK);
         g.fillOval(this.getX(), this.getY(), this.getWidth(), this.getWidth());
     }
 
     @Override
-    protected void move() {
+    protected void updatePosition() {
         if (this.getX() < 0 || this.getX() > 720 || this.getY() < 0 || this.getY() > 480) {
             this.setAlive(false);
             return;
