@@ -88,4 +88,8 @@ public abstract class GameElement {
         return this.getRectangle().intersects(other.getRectangle());
     }
 
+    public void onCollision(GameElement other) {
+        // 无默认实现
+    }
+
 }

@@ -21,7 +21,7 @@ public class GameListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        System.out.println("Key Pressed: " + KeyEvent.getKeyText(keyCode));
+        // System.out.println("Key Pressed: " + KeyEvent.getKeyText(keyCode));
         if (keySet.contains(keyCode)) {
             // 如果按键已经被按下，则不处理重复按下的事件
             return;
@@ -36,7 +36,7 @@ public class GameListener implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        System.out.println("Key Released: " + KeyEvent.getKeyText(keyCode));
+        // System.out.println("Key Released: " + KeyEvent.getKeyText(keyCode));
         if (keySet.contains(keyCode)) {
             keySet.remove(keyCode);
             elementManager.getElementsByType(GameElementType.PLAYER).forEach(player -> {

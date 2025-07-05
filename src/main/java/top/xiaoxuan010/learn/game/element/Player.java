@@ -4,13 +4,11 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.Set;
 
-import javax.swing.ImageIcon;
-
 import lombok.Getter;
 import lombok.Setter;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
-import top.xiaoxuan010.learn.game.manager.GameLoad;
+import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 @Getter
 @Setter
@@ -25,9 +23,13 @@ public class Player extends GameElement {
     // 状态：是否开火
     private boolean isFiring = false;
 
-    public Player(int x, int y, int width, int height, ImageIcon icon) {
-        super(x, y, width, height, icon);
+    public Player(int x, int y, int width, int height, GameElementDirection direction) {
+        super(x, y, width, height, null);
+        this.direction = direction;
+    }
 
+    public Player(int x, int y, GameElementDirection direction) {
+        this(x, y, 50, 50, direction);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class Player extends GameElement {
 
     @Override
     protected void refreshIcon() {
-        this.setIcon(GameLoad.imgMap.get(direction));
+        this.setIcon(GameLoader.imgMap.get("resource.images.player1." + this.getDirection().name().toLowerCase()));
     }
 
     @Override
@@ -115,6 +117,13 @@ public class Player extends GameElement {
         ElementManager.getInstance().addElement(element, GameElementType.BULLET);
         System.out.println("Player fired a bullet at (" + bulletX + ", " + bulletY + ") in direction " + direction);
 
+    }
+
+    @Override
+    public void onCollision(GameElement other) {
+        if (other instanceof Bullet) {
+            setAlive(false);
+        }
     }
 
 }

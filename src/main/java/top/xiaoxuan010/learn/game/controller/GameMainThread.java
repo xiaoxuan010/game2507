@@ -3,35 +3,28 @@ package top.xiaoxuan010.learn.game.controller;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
-
-import top.xiaoxuan010.learn.game.element.Enemy;
 import top.xiaoxuan010.learn.game.element.GameElement;
-import top.xiaoxuan010.learn.game.element.Player;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
+import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 public class GameMainThread extends Thread {
     private final ElementManager elementManager = ElementManager.getInstance();
 
     @Override
     public void run() {
-        while (true) {
-            gameLoad();
-            gameRun();
-            gameOver();
-        }
+        // while (true) {
+        gameLoad();
+        gameRun();
+        gameOver();
+        // }
     }
 
     private void gameLoad() {
-        ImageIcon icon = new ImageIcon("src/main/resources/images/tank/player1/player1_up.png");
-        GameElement player1 = new Player(100, 100, 50, 50, icon);
-        elementManager.addElement(player1, GameElementType.PLAYER);
-
-        for (int i = 0; i < 10; i++) {
-            Enemy enemy = new Enemy();
-            elementManager.addElement(enemy, GameElementType.ENEMY);
-        }
+        GameLoader.loadImages();
+        GameLoader.loadMap(9);
+        GameLoader.loadPlayers();
+        GameLoader.loadEnemies();
     }
 
     private void gameRun() {
@@ -41,7 +34,8 @@ public class GameMainThread extends Thread {
                 elementUpdate(elements);
             });
 
-            collisionDetection(gameElements);
+            collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.ENEMY));
+            collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.MAP));
 
             try {
                 sleep(16);
@@ -64,18 +58,15 @@ public class GameMainThread extends Thread {
         }
     }
 
-    private void collisionDetection(Map<GameElementType, List<GameElement>> gameElements) {
-        List<GameElement> enemyList = gameElements.get(GameElementType.ENEMY);
-        List<GameElement> bulletList = gameElements.get(GameElementType.BULLET);
+    private void collisionDetection(List<GameElement> elements1, List<GameElement> elements2) {
+        for (int i = 0; i < elements1.size(); i++) {
+            GameElement elem1 = elements1.get(i);
+            for (int j = 0; j < elements2.size(); j++) {
+                GameElement elem2 = elements2.get(j);
 
-        for (int i = 0; i < bulletList.size(); i++) {
-            GameElement bullet = bulletList.get(i);
-            for (int j = 0; j < enemyList.size(); j++) {
-                GameElement enemy = enemyList.get(j);
-
-                if (bullet.isAlive() && enemy.isAlive() && bullet.isCollided(enemy)) {
-                    bullet.setAlive(false);
-                    enemy.setAlive(false);
+                if (elem1.isAlive() && elem2.isAlive() && elem1.isCollided(elem2)) {
+                    elem1.onCollision(elem2);
+                    elem2.onCollision(elem1);
                     break;
                 }
             }

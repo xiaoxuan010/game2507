@@ -89,4 +89,9 @@ public class Bullet extends GameElement {
         }
     }
 
+    @Override
+    public void onCollision(GameElement other) {
+        this.setAlive(false);
+    }
+
 }

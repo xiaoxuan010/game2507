@@ -21,4 +21,8 @@ public class Enemy extends GameElement {
         g.drawImage(getIcon().getImage(), getX(), getY(), getWidth(), getHeight(), null);
     }
 
+    @Override
+    public void onCollision(GameElement other) {
+        this.setAlive(false);
+    }
 }
