@@ -16,6 +16,8 @@ public class CannonTower extends RotatableElement {
 
     private int level = 1;
     private boolean isFiring = false;
+    private long lastFireTime = 0;
+    private final long fireDuration = 100; // 动画持续时间，单位：毫秒
 
     public CannonTower() {
         this.setWidth(50);
@@ -30,6 +32,10 @@ public class CannonTower extends RotatableElement {
 
     @Override
     public void update() {
+        long currentTime = System.currentTimeMillis();
+        if (isFiring && (currentTime - lastFireTime) >= fireDuration) {
+            setFiring(false);
+        }
         updateIcon();
     }
 
@@ -48,6 +54,8 @@ public class CannonTower extends RotatableElement {
     @Override
     public void mouseClicked(int x, int y) {
         // 计算炮口位置
+        setFiring(true); // 开始射击动画
+        lastFireTime = System.currentTimeMillis();
         MuzzlePosition muzzlePosition = calculateMuzzlePosition();
         float muzzleX = getRotationCenterX() + muzzlePosition.x;
         float muzzleY = getRotationCenterY() + muzzlePosition.y;
