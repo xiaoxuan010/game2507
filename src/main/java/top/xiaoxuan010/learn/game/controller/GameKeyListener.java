@@ -8,7 +8,7 @@ import java.util.Set;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 
-public class GameListener implements KeyListener {
+public class GameKeyListener implements KeyListener {
     private final ElementManager elementManager = ElementManager.getInstance();
 
     private Set<Integer> keySet = new LinkedHashSet<Integer>();

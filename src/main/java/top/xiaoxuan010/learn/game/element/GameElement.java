@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public abstract class GameElement {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-    private ImageIcon icon;
+    protected int x;
+    protected int y;
+    protected int width;
+    protected int height;
+    protected ImageIcon icon;
 
-    private boolean isAlive = true;
+    protected boolean isAlive = true;
 
     public GameElement(int x, int y, int width, int height, ImageIcon icon) {
         this.x = x;
@@ -48,6 +48,10 @@ public abstract class GameElement {
      * @param keySet 当前被点击的按键集合，包含所有被按下的键的键码。
      */
     public void keyUpdated(Set<Integer> keySet) {
+        // 无默认实现
+    }
+
+    public void mouseMotionUpdated(int x, int y) {
         // 无默认实现
     }
 
@@ -89,6 +93,10 @@ public abstract class GameElement {
     }
 
     public void onCollision(GameElement other) {
+        // 无默认实现
+    }
+
+    public void mouseClicked(int x, int y) {
         // 无默认实现
     }
 

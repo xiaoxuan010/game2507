@@ -6,16 +6,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Setter
+@Slf4j
 public class GameFrame extends JFrame {
     public static int GameX = 800;
     public static int GameY = 500;
 
     private JPanel gamePanel = null;
     private KeyListener keyListener = null;
-    // private MouseMotionListener mouseMotionListener = null;
-    // private MouseListener mouseListener = null;
     private Thread gameThread = null;
 
     public void setGamePanel(JPanel gamePanel) {
@@ -54,8 +54,8 @@ public class GameFrame extends JFrame {
             gameThread = new Thread((Runnable) this.gamePanel);
             gameThread.start();
         } else {
-            System.out.println("GamePanel" + gamePanel.getClass().getName()
-                    + " does not implement Runnable, cannot start game thread.");
+            log.warn("GamePanel {} does not implement Runnable, cannot start game thread.",
+                    gamePanel.getClass().getName());
         }
     }
 }
