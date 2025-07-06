@@ -14,6 +14,7 @@ public class CannonTower extends GameElement {
         this.setY(415);
         this.setWidth(50);
         this.setHeight(50);
+        this.refreshIcon();
     }
 
     @Override
@@ -25,5 +26,6 @@ public class CannonTower extends GameElement {
     protected void refreshIcon() {
         this.setIcon(GameLoader.imgMap.get("cannon.tower.lv" + level + (isFiring ? ".fire" : ".normal")));
     }
+
 
 }
