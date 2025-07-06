@@ -55,6 +55,10 @@ public abstract class GameElement {
         // 无默认实现
     }
 
+    public void update(long time) {
+        update();
+    }
+
     public void update() {
         // 无默认实现
     }

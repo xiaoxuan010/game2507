@@ -1,9 +1,11 @@
 package top.xiaoxuan010.learn.game.view;
 
 import java.awt.Graphics;
+import java.util.List;
 
 import javax.swing.JPanel;
 
+import top.xiaoxuan010.learn.game.element.GameElement;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 
@@ -23,12 +25,12 @@ public class GameMainPanel extends JPanel implements Runnable {
         super.paint(g);
 
         for (GameElementType elementType : GameElementType.values()) {
-            elementManager.getElementsByType(elementType).forEach(element -> {
-                if (element != null) {
-                    element.draw(g);
-                }
-            });
+            List<GameElement> elements = elementManager.getElementsByType(elementType);
+            for (int i = 0; i < elements.size(); i++) {
+                elements.get(i).draw(g);
+            }
         }
+
     }
 
     @Override

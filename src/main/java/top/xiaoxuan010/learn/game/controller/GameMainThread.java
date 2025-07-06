@@ -29,9 +29,11 @@ public class GameMainThread extends Thread {
 
     private void gameRun() {
         while (true) {
+            long time = System.currentTimeMillis();
+
             Map<GameElementType, List<GameElement>> gameElements = elementManager.getGameElements();
             gameElements.forEach((_, elements) -> {
-                elementUpdate(elements);
+                elementUpdate(elements, time);
             });
 
             collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.ENEMY));
@@ -45,12 +47,12 @@ public class GameMainThread extends Thread {
         }
     }
 
-    private void elementUpdate(List<GameElement> elements) {
+    private void elementUpdate(List<GameElement> elements, long time) {
         for (int i = elements.size() - 1; i >= 0; i--) {
             GameElement element = elements.get(i);
             if (element != null) {
                 if (element.isAlive()) {
-                    element.update();
+                    element.update(time);
                 } else {
                     elements.remove(i);
                 }

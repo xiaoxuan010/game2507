@@ -3,19 +3,25 @@ package top.xiaoxuan010.learn.game.element;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.loader.FrameAnimationLoader;
+import top.xiaoxuan010.learn.game.manager.ElementManager;
+import top.xiaoxuan010.learn.game.manager.GameElementType;
 
 @Slf4j
 @Getter
 public class Bullet extends RotatableElement {
+    private final ElementManager elementManager = ElementManager.getInstance();
+
     private float targetX, targetY;
     private float speed;
     private boolean arrived = false;
     private FrameAnimation animation;
+    private int bulletLevel;
 
     public Bullet(float x, float y, float targetX, float targetY, float speed, int bulletLevel) {
         this.targetX = targetX;
         this.targetY = targetY;
         this.speed = speed;
+        this.bulletLevel = bulletLevel;
 
         this.directionBias = (float) Math.PI / 2;
         this.setDirection((float) Math.atan2(targetY - y, targetX - x));
@@ -56,6 +62,8 @@ public class Bullet extends RotatableElement {
             // 到达目标
             setCenterPosition(targetX, targetY);
             setAlive(false);
+            onArrive();
+            arrived = true;
             log.debug("Bullet arrived at target ({}, {})", targetX, targetY);
         } else {
             // 继续移动
@@ -69,5 +77,10 @@ public class Bullet extends RotatableElement {
             animation.update();
             setIcon(animation.getCurrentFrame());
         }
+    }
+
+    private void onArrive() {
+        FishNet fishNet = new FishNet(centerX, centerY, getBulletLevel(), getDirection());
+        elementManager.addElement(fishNet, GameElementType.BULLET);
     }
 }
