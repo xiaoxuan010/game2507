@@ -8,10 +8,12 @@ import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
+import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
+@Slf4j
 public class GameLoader {
     private final static ElementManager ELEMENT_MANAGER = ElementManager.getInstance();
 
@@ -27,7 +29,6 @@ public class GameLoader {
             Properties properties = new Properties();
             properties.load(inputStream);
             for (String key : properties.stringPropertyNames()) {
-                System.out.println("加载图片资源: " + key);
                 String value = properties.getProperty(key);
                 String imagePath = "images/" + value.trim();
                 if (value != null) {
@@ -35,6 +36,7 @@ public class GameLoader {
                     imgMap.put(key, icon);
                 }
             }
+            log.info("Image resources loaded successfully, total {} images loaded", imgMap.size());
         } catch (IOException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
