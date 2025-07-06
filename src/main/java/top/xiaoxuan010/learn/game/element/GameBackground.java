@@ -10,11 +10,18 @@ import top.xiaoxuan010.learn.game.manager.GameLoader;
 @Setter
 public class GameBackground extends GameElement {
 
-    public GameBackground(String bgName) {
+    /**
+     * 游戏背景类，用于加载和显示游戏背景图片
+     * 
+     * @param gameIndex 关卡编号（从1开始）
+     */
+    public GameBackground(Integer gameIndex) {
         this.setX(0);
         this.setY(0);
 
-        this.setIcon(GameLoader.imgMap.get(bgName));
+        gameIndex--;
+
+        this.setIcon(GameLoader.imgMap.get("background.game." + gameIndex));
 
         this.setWidth(this.getIcon().getIconWidth());
         this.setHeight(this.getIcon().getIconHeight());

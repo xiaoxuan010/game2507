@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
+import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
@@ -35,18 +36,19 @@ public class GameLoader {
                 }
             }
         } catch (IOException e) {
-            System.err.println("加载图片资源失败: " + e.getMessage());
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
     }
 
     public static void loadBackground(int mapId) {
-        GameBackground gameBackground = new GameBackground("background.menu");
+        GameBackground gameBackground = new GameBackground(2);
         ELEMENT_MANAGER.addElement(gameBackground, GameElementType.MAP);
     }
 
-    public static void loadPlayers() {
-
+    public static void loadPlayer() {
+        CannonTower cannonTower = new CannonTower();
+        ELEMENT_MANAGER.addElement(cannonTower, GameElementType.PLAYER);
     }
 
     public static void loadEnemies() {

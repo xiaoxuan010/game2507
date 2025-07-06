@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class GameFrame extends JFrame {
     public static int GameX = 800;
-    public static int GameY = 480;
+    public static int GameY = 500;
 
     private JPanel gamePanel = null;
     private KeyListener keyListener = null;
