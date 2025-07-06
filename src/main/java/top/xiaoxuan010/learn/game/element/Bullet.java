@@ -1,13 +1,16 @@
 package top.xiaoxuan010.learn.game.element;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import top.xiaoxuan010.learn.game.manager.GameLoader;
+import top.xiaoxuan010.learn.game.loader.FrameAnimationLoader;
 
 @Slf4j
+@Getter
 public class Bullet extends RotatableElement {
     private float targetX, targetY;
     private float speed;
     private boolean arrived = false;
+    private FrameAnimation animation;
 
     public Bullet(float x, float y, float targetX, float targetY, float speed, int bulletLevel) {
         this.targetX = targetX;
@@ -17,9 +20,14 @@ public class Bullet extends RotatableElement {
         this.directionBias = (float) Math.PI / 2;
         this.setDirection((float) Math.atan2(targetY - y, targetX - x));
 
-        this.setIcon(GameLoader.imgMap.get("bullet.lv" + bulletLevel));
-        this.setWidth(getIcon().getIconWidth());
-        this.setHeight(getIcon().getIconHeight());
+        // 加载帧动画
+        animation = FrameAnimationLoader.load("bullet.lv" + bulletLevel);
+
+        if (!animation.getFrames().isEmpty()) {
+            this.setIcon(animation.getCurrentFrame());
+            this.setWidth(getIcon().getIconWidth());
+            this.setHeight(getIcon().getIconHeight());
+        }
 
         // 设置中心点坐标
         this.setCenterPosition(x, y);
@@ -34,7 +42,7 @@ public class Bullet extends RotatableElement {
     }
 
     @Override
-    protected void updatePosition() {
+    public void update() {
         if (arrived) {
             return;
         }
@@ -47,7 +55,7 @@ public class Bullet extends RotatableElement {
         if (distance <= speed) {
             // 到达目标
             setCenterPosition(targetX, targetY);
-            arrived = true;
+            setAlive(false);
             log.debug("Bullet arrived at target ({}, {})", targetX, targetY);
         } else {
             // 继续移动
@@ -55,9 +63,11 @@ public class Bullet extends RotatableElement {
             float moveY = (dy / distance) * speed;
             setCenterPosition(centerX + moveX, centerY + moveY);
         }
-    }
 
-    public boolean isArrived() {
-        return arrived;
+        // 更新动画帧
+        if (animation != null) {
+            animation.update();
+            setIcon(animation.getCurrentFrame());
+        }
     }
 }

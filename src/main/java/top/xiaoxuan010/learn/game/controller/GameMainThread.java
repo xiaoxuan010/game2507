@@ -50,7 +50,7 @@ public class GameMainThread extends Thread {
             GameElement element = elements.get(i);
             if (element != null) {
                 if (element.isAlive()) {
-                    element.updateStatus();
+                    element.update();
                 } else {
                     elements.remove(i);
                 }

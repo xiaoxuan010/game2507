@@ -1,12 +1,16 @@
 package top.xiaoxuan010.learn.game.element;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 @Slf4j
+@Setter
+@Getter
 public class CannonTower extends RotatableElement {
     private final ElementManager elementManager = ElementManager.getInstance();
 
@@ -21,11 +25,15 @@ public class CannonTower extends RotatableElement {
 
         this.setDirectionBias((float) Math.PI / 2);
 
-        this.refreshIcon();
+        this.updateIcon();
     }
 
     @Override
-    protected void refreshIcon() {
+    public void update() {
+        updateIcon();
+    }
+
+    private void updateIcon() {
         this.setIcon(GameLoader.imgMap.get("cannon.tower.lv" + level + (isFiring ? ".fire" : ".normal")));
     }
 

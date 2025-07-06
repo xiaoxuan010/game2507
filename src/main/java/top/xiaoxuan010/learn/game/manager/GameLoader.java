@@ -50,6 +50,7 @@ public class GameLoader {
 
     public static void loadPlayer() {
         CannonTower cannonTower = new CannonTower();
+        cannonTower.setLevel(9);
         ELEMENT_MANAGER.addElement(cannonTower, GameElementType.PLAYER);
     }
 

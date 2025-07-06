@@ -55,21 +55,7 @@ public abstract class GameElement {
         // 无默认实现
     }
 
-    public final void updateStatus() {
-        refreshIcon();
-        updatePosition();
-        fire();
-    }
-
-    protected void updatePosition() {
-        // 无默认实现
-    }
-
-    protected void fire() {
-        // 无默认实现
-    }
-
-    protected void refreshIcon() {
+    public void update() {
         // 无默认实现
     }
 
