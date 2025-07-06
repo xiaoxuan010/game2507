@@ -86,8 +86,17 @@ public abstract class GameElement {
         // 无默认实现
     }
 
-    public void mouseClicked(int x, int y) {
+    /**
+     * 鼠标点击事件处理方法。
+     * 子类可以重写此方法以实现自定义的鼠标点击响应逻辑。
+     * 
+     * @param x 鼠标点击的x坐标
+     * @param y 鼠标点击的y坐标
+     * @return 事件是否已被处理。如果返回true，表示事件已被处理，其他元素不需要再处理此事件。
+     */
+    public boolean mouseClicked(int x, int y) {
         // 无默认实现
+        return false;
     }
 
 }

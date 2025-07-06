@@ -7,7 +7,7 @@ package top.xiaoxuan010.learn.game.manager;
 public enum GameElementType {
     MAP,
     ENEMY,
-    BOSS,
     BULLET,
     PLAYER,
+    UI
 }

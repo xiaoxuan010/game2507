@@ -25,6 +25,7 @@ public class GameMainThread extends Thread {
         GameLoader.loadBackground(9);
         GameLoader.loadPlayer();
         GameLoader.loadEnemies();
+        GameLoader.loadUI();
     }
 
     private void gameRun() {

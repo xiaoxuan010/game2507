@@ -9,7 +9,9 @@ import java.util.Properties;
 import javax.swing.ImageIcon;
 
 import lombok.extern.slf4j.Slf4j;
+import top.xiaoxuan010.learn.game.element.CannonDowngradeBtn;
 import top.xiaoxuan010.learn.game.element.CannonTower;
+import top.xiaoxuan010.learn.game.element.CannonUpgradeBtn;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
@@ -50,11 +52,18 @@ public class GameLoader {
 
     public static void loadPlayer() {
         CannonTower cannonTower = new CannonTower();
-        cannonTower.setLevel(9);
+        cannonTower.setLevel(1);
         ELEMENT_MANAGER.addElement(cannonTower, GameElementType.PLAYER);
     }
 
     public static void loadEnemies() {
 
+    }
+
+    public static void loadUI() {
+        CannonUpgradeBtn cannonUpgradeBtn = new CannonUpgradeBtn();
+        ELEMENT_MANAGER.addElement(cannonUpgradeBtn, GameElementType.UI);
+        CannonDowngradeBtn cannonDowngradeBtn = new CannonDowngradeBtn();
+        ELEMENT_MANAGER.addElement(cannonDowngradeBtn, GameElementType.UI);
     }
 }

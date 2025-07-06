@@ -12,6 +12,8 @@ import top.xiaoxuan010.learn.game.manager.GameLoader;
 @Setter
 @Getter
 public class CannonTower extends RotatableElement {
+    public static final int MAX_LEVEL = 11;
+
     private final ElementManager elementManager = ElementManager.getInstance();
 
     private int level = 1;
@@ -20,10 +22,10 @@ public class CannonTower extends RotatableElement {
     private final long fireDuration = 100; // 动画持续时间，单位：毫秒
 
     public CannonTower() {
-        this.setWidth(50);
-        this.setHeight(50);
+        this.setWidth(80);
+        this.setHeight(80);
 
-        this.setCenterPosition(385, 415);
+        this.setCenterPosition(385, 400);
 
         this.setDirectionBias((float) Math.PI / 2);
 
@@ -52,7 +54,12 @@ public class CannonTower extends RotatableElement {
     }
 
     @Override
-    public void mouseClicked(int x, int y) {
+    public boolean mouseClicked(int x, int y) {
+        fire(x, y);
+        return true;
+    }
+
+    private void fire(int x, int y) {
         // 计算炮口位置
         setFiring(true); // 开始射击动画
         lastFireTime = System.currentTimeMillis();

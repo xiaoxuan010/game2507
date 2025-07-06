@@ -27,6 +27,9 @@ public class GameKeyListener implements KeyListener {
             return;
         } else {
             keySet.add(keyCode);
+            elementManager.getElementsByType(GameElementType.UI).forEach(ui -> {
+                ui.keyUpdated(keySet);
+            });
             elementManager.getElementsByType(GameElementType.PLAYER).forEach(player -> {
                 player.keyUpdated(keySet);
             });
@@ -39,6 +42,9 @@ public class GameKeyListener implements KeyListener {
         // System.out.println("Key Released: " + KeyEvent.getKeyText(keyCode));
         if (keySet.contains(keyCode)) {
             keySet.remove(keyCode);
+            elementManager.getElementsByType(GameElementType.UI).forEach(ui -> {
+                ui.keyUpdated(keySet);
+            });
             elementManager.getElementsByType(GameElementType.PLAYER).forEach(player -> {
                 player.keyUpdated(keySet);
             });
