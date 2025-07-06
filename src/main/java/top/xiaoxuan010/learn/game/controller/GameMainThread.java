@@ -22,7 +22,7 @@ public class GameMainThread extends Thread {
 
     private void gameLoad() {
         GameLoader.loadImages();
-        GameLoader.loadMap(9);
+        GameLoader.loadBackground(9);
         GameLoader.loadPlayers();
         GameLoader.loadEnemies();
     }

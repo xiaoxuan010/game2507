@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Setter
 public class GameFrame extends JFrame {
-    public static int GameX = 720;
+    public static int GameX = 800;
     public static int GameY = 480;
 
     private JPanel gamePanel = null;
@@ -27,7 +27,7 @@ public class GameFrame extends JFrame {
     }
 
     public void init() {
-        this.setTitle("Game Frame");
+        this.setTitle("捕鱼达人");
 
         this.setSize(GameX, GameY);
 
@@ -37,10 +37,6 @@ public class GameFrame extends JFrame {
 
         // 设置窗口不可调整大小
         this.setResizable(false);
-    }
-
-    public void addButton() {
-
     }
 
     public void start() {

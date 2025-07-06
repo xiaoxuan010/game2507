@@ -19,7 +19,8 @@ public class ImageResourceLoader {
      * @throws IOException 如果加载图片失败
      */
     public static BufferedImage load(String resourcePath) throws IOException {
-        if (cache.containsKey(resourcePath))
+        try {
+            if (cache.containsKey(resourcePath))
             return cache.get(resourcePath);
 
         BufferedImage img;
@@ -33,5 +34,9 @@ public class ImageResourceLoader {
         }
         cache.put(resourcePath, img);
         return img;
+    } catch (Exception e) {
+        throw new IOException("加载图片资源失败: " + resourcePath, e);
+    }
+
     }
 }
