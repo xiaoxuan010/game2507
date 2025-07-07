@@ -3,6 +3,7 @@ package top.xiaoxuan010.learn.game.manager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.element.CannonDowngradeBtn;
 import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.CannonUpgradeBtn;
+import top.xiaoxuan010.learn.game.element.Fish;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
@@ -57,7 +59,24 @@ public class GameLoader {
     }
 
     public static void loadEnemies() {
-
+        // 使用配置文件信息生成鱼类
+        List<GameLevelConfig.FishSpawnInfo> fishSpawnInfos = GameLevelConfig.generateFishSpawnInfo();
+        
+        log.info("Loading {} fish according to level configuration", fishSpawnInfos.size());
+        
+        for (GameLevelConfig.FishSpawnInfo fishInfo : fishSpawnInfos) {
+            Fish fish = new Fish(
+                fishInfo.x, 
+                fishInfo.y, 
+                fishInfo.width, 
+                fishInfo.height, 
+                fishInfo.level,
+                fishInfo.fishType
+            );
+            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
+        }
+        
+        log.info("Successfully loaded {} fish to the game", fishSpawnInfos.size());
     }
 
     public static void loadUI() {
