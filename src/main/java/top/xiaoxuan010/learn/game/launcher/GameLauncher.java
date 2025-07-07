@@ -24,6 +24,7 @@ public class GameLauncher {
         gameMainPanel.addMouseListener(gameMouseListener);
 
         GameMainThread gameMainThread = new GameMainThread();
+        gameMainThread.setGamePanel(gameMainPanel);
         gameJFrame.setGameThread(gameMainThread);
 
         gameJFrame.start();

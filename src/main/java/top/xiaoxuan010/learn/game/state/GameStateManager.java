@@ -20,7 +20,7 @@ public class GameStateManager {
 
     private GameStateManager() {
         initializeStates();
-        setState(GameState.LOADING);
+        setState(GameState.MAIN_MENU);
     }
 
     public static GameStateManager getInstance() {
@@ -77,6 +77,9 @@ public class GameStateManager {
     public void update(long time) {
         if (currentStateHandler != null) {
             currentStateHandler.update(time);
+        }
+        else {
+            log.warn("Current state handler is not initialized. Cannot update game state.");
         }
     }
 }

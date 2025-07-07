@@ -49,28 +49,30 @@ public class GamePlayingState extends BaseGameState {
     public void update(long deltaTime) {
         // 更新鱼类管理器
         fishManager.update();
-
+        
         // 更新所有游戏元素
         Map<GameElementType, List<GameElement>> gameElements = elementManager.getGameElements();
         gameElements.forEach((_, elements) -> {
             updateElements(elements, deltaTime);
         });
 
+        // 刷新元素列表（统一处理添加和删除）
+        elementManager.refresh();
+
         // 碰撞检测
-        performCollisionDetection(gameElements);
+        performCollisionDetection(elementManager.getGameElements());
 
         // 检查游戏结束条件
         checkGameOverConditions();
     }
 
     private void updateElements(List<GameElement> elements, long deltaTime) {
-        for (int i = elements.size() - 1; i >= 0; i--) {
-            GameElement element = elements.get(i);
-            if (element != null) {
-                if (element.isAlive()) {
+        // 使用传统 for 循环避免并发修改异常
+        for (int i = 0; i < elements.size(); i++) {
+            if (i < elements.size()) { // 双重检查避免索引越界
+                GameElement element = elements.get(i);
+                if (element != null && element.isAlive()) {
                     element.update(deltaTime);
-                } else {
-                    elements.remove(i);
                 }
             }
         }

@@ -40,18 +40,12 @@ public class GameLoader {
     private static final int THREAD_POOL_SIZE = 8;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
-    /**
-     * Preload essential resources (resources required for the menu)
-     */
     public static void preloadEssentialResources() {
         log.info("Start preloading essential resources...");
         long startTime = System.currentTimeMillis();
 
         try {
-            // Load menu background images
             loadEssentialImages();
-
-            // Load fonts
             loadFonts();
 
             long endTime = System.currentTimeMillis();
@@ -63,12 +57,8 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Load essential image resources
-     */
     private static void loadEssentialImages() {
         try {
-            // Load menu background
             imgMap.put("background.menu", new ImageIcon(ImageResourceLoader.load("images/maps/start.jpg")));
             log.debug("Menu background image loaded");
 
@@ -78,12 +68,9 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Load font resources
-     */
     private static void loadFonts() {
         try {
-            // Load font files from resources/font directory
+            // 加载自定义字体
             InputStream fontStream = GameLoader.class.getClassLoader()
                     .getResourceAsStream("font/hk4e_zh-cn.ttf");
 
@@ -93,21 +80,20 @@ public class GameLoader {
                 log.debug("Custom font loaded");
                 fontStream.close();
             } else {
-                // If font file is not found, use system default font
+                // 如果加载字体失败，使用系统默认字体
                 Font defaultFont = new Font("微软雅黑", Font.PLAIN, 12);
                 fontMap.put("default", defaultFont);
                 log.warn("Custom font file not found, using system default font");
             }
 
         } catch (IOException | FontFormatException e) {
-            // If font loading fails, use system default font
             Font defaultFont = new Font("微软雅黑", Font.PLAIN, 12);
             fontMap.put("default", defaultFont);
             log.warn("Font loading failed, using system default font", e);
         }
     }
 
-    public static void loadImages(Consumer<Integer> progressCallback) {
+    public static void loadImages(Consumer<Float> progressCallback) {
         long startTime = System.currentTimeMillis();
         log.trace("Start loading image resources...");
         try (InputStream inputStream = GameLoader.class.getClassLoader()
@@ -118,11 +104,11 @@ public class GameLoader {
             Properties properties = new Properties();
             properties.load(inputStream);
 
-            // Get total number of images for progress calculation
+            // 初始化图片资源映射
             int totalImages = properties.size();
             java.util.concurrent.atomic.AtomicInteger loadedImages = new java.util.concurrent.atomic.AtomicInteger(0);
 
-            // Use CompletableFuture to collect all loading tasks
+            // 使用 CompletableFuture 异步加载图片资源
             CompletableFuture<?>[] futures = properties.stringPropertyNames().stream()
                     .map(key -> CompletableFuture.runAsync(() -> {
                         String value = properties.getProperty(key);
@@ -139,7 +125,8 @@ public class GameLoader {
                             } finally {
                                 // Update progress after loading
                                 synchronized (GameLoader.class) {
-                                    int progress = (int) ((double) loadedImages.incrementAndGet() / totalImages * 100);
+                                    float progress = ((float) loadedImages.incrementAndGet() / totalImages
+                                            * 100);
                                     progressCallback.accept(progress);
                                 }
                             }
@@ -147,7 +134,7 @@ public class GameLoader {
                     }, executorService))
                     .toArray(CompletableFuture[]::new);
 
-            // Wait for all tasks to complete
+            // 等待所有异步任务完成
             CompletableFuture.allOf(futures).join();
 
             long endTime = System.currentTimeMillis();

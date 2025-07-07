@@ -19,10 +19,6 @@ public class GameFrame extends JFrame {
     private KeyListener keyListener = null;
     private Thread gameThread = null;
 
-    public void setGamePanel(JPanel gamePanel) {
-        this.gamePanel = gamePanel;
-    }
-
     public GameFrame() {
         init();
     }
@@ -57,16 +53,11 @@ public class GameFrame extends JFrame {
         if (keyListener != null) {
             this.addKeyListener(keyListener);
         }
+
         if (gameThread != null) {
             gameThread.start();
         }
+
         this.setVisible(true);
-        if (this.gamePanel instanceof Runnable) {
-            gameThread = new Thread((Runnable) this.gamePanel);
-            gameThread.start();
-        } else {
-            log.warn("GamePanel {} does not implement Runnable, cannot start game thread.",
-                    gamePanel.getClass().getName());
-        }
     }
 }
