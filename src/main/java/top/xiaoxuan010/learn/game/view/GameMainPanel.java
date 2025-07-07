@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import top.xiaoxuan010.learn.game.element.components.GameElement;
+import top.xiaoxuan010.learn.game.element.utils.GameStateManager;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.FishManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
@@ -46,6 +47,9 @@ public class GameMainPanel extends JPanel implements Runnable {
                 
                 // 更新鱼类管理器
                 fishManager.update();
+                
+                // 更新游戏状态管理器
+                GameStateManager.getInstance().update(currentTime);
                 
                 // 更新所有游戏元素
                 for (GameElementType elementType : GameElementType.values()) {

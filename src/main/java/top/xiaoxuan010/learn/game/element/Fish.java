@@ -187,6 +187,21 @@ public class Fish extends GameElement {
         return level;
     }
     
+    /**
+     * 获取捕获此鱼的金币奖励
+     * @return 金币数量
+     */
+    public int getCoinReward() {
+        // 根据鱼的等级返回不同的金币奖励
+        if (level <= 4) {
+            return level * 2; // 1-4级鱼：2, 4, 6, 8金币
+        } else if (level <= 8) {
+            return level * 3; // 5-8级鱼：15, 18, 21, 24金币
+        } else {
+            return level * 5; // 9-16级鱼：45, 50, 55, 60, 65, 70, 75, 80金币
+        }
+    }
+    
     public String getFishType() {
         return fishType;
     }
@@ -240,17 +255,24 @@ public class Fish extends GameElement {
     public int getGoldValue() {
         // 根据鱼的等级返回金币价值
         switch (level) {
-            case 1: return 2;   // 小黄鱼
-            case 2: return 3;   // 比目鱼
-            case 3: return 5;   // 小丑鱼
-            case 4: return 8;   // 红鱼
-            case 5: return 12;  // 蓝鱼
-            case 6: return 18;  // 紫鱼
-            case 7: return 25;  // 黑鱼
-            case 8: return 35;  // 银龙鱼
-            case 9: return 50;  // 金龙鱼
-            case 10: return 100; // 鲨鱼
-            default: return 1;
+            case 1: return 2;   
+            case 2: return 3;  
+            case 3: return 5;   
+            case 4: return 8;  
+            case 5: return 12;  
+            case 6: return 18;  
+            case 7: return 25;   
+            case 8: return 35;   
+            case 9: return 50;  
+            case 10: return 60; 
+            case 11: return 70; 
+            case 12: return 80; 
+            case 13: return 100; 
+            case 14: return 120; 
+            case 15: return 150; 
+            case 16: return 180; 
+            case 17: return 210;
+            default: return 1; // 默认值
         }
     }
     
@@ -261,10 +283,10 @@ public class Fish extends GameElement {
             setCaught();
             
             // 增加金币
-            int goldValue = getGoldValue();
-            top.xiaoxuan010.learn.game.element.utils.GameStateManager.getInstance().addCoins(goldValue);
+            int coinReward = getCoinReward();
+            top.xiaoxuan010.learn.game.element.utils.GameStateManager.getInstance().addCoins(coinReward);
             
-            System.out.println("鱼 " + fishType + " 被捕获！获得 " + goldValue + " 金币");
+            System.out.println("鱼 " + fishType + " (等级" + level + ") 被捕获！获得 " + coinReward + " 金币");
         }
     }
 }
