@@ -158,8 +158,14 @@ public class GamePlayingState extends BaseGameState {
     }
 
     private void checkGameOverConditions() {
-        // 检查游戏结束条件，比如时间到了或者完成目标
-
+        if (gameStateDataManager.getGameCountdown() <= 0) {
+            log.info("Game over due to countdown reaching zero");
+            endGame();
+        }
+        if (gameStateDataManager.getCoins() <= 0) {
+            log.info("Game over due to coins reaching zero");
+            endGame();
+        }
     }
 
     @Override

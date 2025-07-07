@@ -5,9 +5,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
+import javax.swing.ImageIcon;
+
 import lombok.extern.slf4j.Slf4j;
+import top.xiaoxuan010.learn.game.manager.GameLoader;
+import top.xiaoxuan010.learn.game.manager.utils.GameStateDataManager;
 import top.xiaoxuan010.learn.game.state.GameState;
 import top.xiaoxuan010.learn.game.state.GameStateManager;
+import top.xiaoxuan010.learn.game.utils.GraphicsUtils;
 
 @Slf4j
 public class GameOverState extends BaseGameState {
@@ -21,6 +26,7 @@ public class GameOverState extends BaseGameState {
     public void enter() {
         log.info("Entering game over state");
         // 获取最终分数等信息
+        this.finalScore = GameStateDataManager.getInstance().getCoins();
     }
     
     @Override
@@ -35,45 +41,58 @@ public class GameOverState extends BaseGameState {
     
     @Override
     public void render(Graphics g) {
-        // 绘制游戏结束背景
-        g.setColor(new Color(0, 0, 0, 150)); // 半透明黑色
-        g.fillRect(0, 0, 800, 600);
+        // 绘制背景
+        ImageIcon bg = GameLoader.imgMap.get("background.menu");
+        if (bg != null) {
+            g.drawImage(bg.getImage(), 0, 0, 800, 600, null);
+        } else {
+            g.setColor(Color.BLUE);
+            g.fillRect(0, 0, 800, 600);
+        }
         
         // 绘制游戏结束文本
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 48));
+        Font menuFont = GameLoader.fontMap.get("default");
+        g.setFont(menuFont != null ? menuFont.deriveFont(72f) : new Font("微软雅黑", Font.BOLD, 72));
         FontMetrics titleFm = g.getFontMetrics();
-        String gameOverText = "Game Over";
+        String gameOverText = "游戏结束";
         int titleX = (800 - titleFm.stringWidth(gameOverText)) / 2;
-        g.drawString(gameOverText, titleX, 200);
+        GraphicsUtils.drawStringWithOutline(g, gameOverText, titleX, 200, Color.WHITE, Color.BLACK);
         
         // 绘制分数
-        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.setFont(menuFont != null ? menuFont.deriveFont(24f) : new Font("微软雅黑", Font.BOLD, 24));
         FontMetrics scoreFm = g.getFontMetrics();
-        String scoreText = "Final Score: " + finalScore;
+        String scoreText = "最终得分：" + finalScore;
         int scoreX = (800 - scoreFm.stringWidth(scoreText)) / 2;
-        g.drawString(scoreText, scoreX, 280);
+        GraphicsUtils.drawStringWithOutline(g, scoreText, scoreX, 280, Color.WHITE, Color.BLACK);
         
         // 绘制重新开始按钮
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(0, 200, 83));
         g.fillRect(200, 350, 150, 50);
         g.setColor(Color.WHITE);
-        String restartText = "Restart";
+        String restartText = "重新开始";
         int restartX = 200 + (150 - scoreFm.stringWidth(restartText)) / 2;
-        g.drawString(restartText, restartX, 380);
+        g.drawString(restartText, restartX, 382);
         
         // 绘制返回主菜单按钮
-        g.setColor(Color.BLUE);
+        g.setColor(Color.GRAY);
         g.fillRect(450, 350, 150, 50);
         g.setColor(Color.WHITE);
-        String menuText = "Main Menu";
+        String menuText = "返回主菜单";
         int menuX = 450 + (150 - scoreFm.stringWidth(menuText)) / 2;
-        g.drawString(menuText, menuX, 380);
+        g.drawString(menuText, menuX, 382);
     }
     
     @Override
-    public void handleInput() {
-        // 处理重新开始和返回主菜单的输入
+    public void handleInput(int x, int y) {
+        // 检查是否点击了重新开始按钮 (200, 350, 150, 50)
+        if (x >= 200 && x <= 350 && y >= 350 && y <= 400) {
+            restartGame();
+        }
+        // 检查是否点击了返回主菜单按钮 (450, 350, 150, 50)
+        else if (x >= 450 && x <= 600 && y >= 350 && y <= 400) {
+            returnToMenu();
+        }
     }
     
     public void restartGame() {

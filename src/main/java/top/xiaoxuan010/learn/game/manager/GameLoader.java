@@ -25,6 +25,8 @@ public class GameLoader {
     // 字体缓存
     public static Map<String, Font> fontMap = new HashMap<>();
 
+    public static boolean isLoaded = false;
+
     // 线程池大小可以根据实际情况调整
     private static final int THREAD_POOL_SIZE = 8;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -127,6 +129,7 @@ public class GameLoader {
             CompletableFuture.allOf(futures).join();
 
             long endTime = System.currentTimeMillis();
+            isLoaded = true; // 标记资源加载完成
             log.info("Image resources loaded successfully, total {} images loaded", imgMap.size());
             log.debug("Finished loading images in {} ms", (endTime - startTime));
         } catch (IOException e) {

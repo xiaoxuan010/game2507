@@ -57,6 +57,7 @@ public class CannonTower extends RotatableElement {
 
     @Override
     public boolean mouseClicked(int x, int y) {
+        mouseMotionUpdated(x, y);
         fire(x, y);
         return true;
     }

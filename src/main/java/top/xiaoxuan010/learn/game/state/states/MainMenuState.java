@@ -97,6 +97,23 @@ public class MainMenuState extends BaseGameState {
         // 输入处理在GameMainPanel中完成
     }
 
+    @Override
+    public void handleInput(int x, int y) {
+        // 检查是否点击了开始按钮 (300, 250, 200, 60)
+        if (x >= 300 && x <= 500 && y >= 250 && y <= 310) {
+            // 进入加载状态，而不是直接开始游戏
+            if (GameLoader.isLoaded) {
+                stateManager.setState(GameState.GAME_PLAYING);
+            } else {
+                stateManager.setState(GameState.LOADING);
+            }
+        }
+        // 检查是否点击了退出按钮 (300, 350, 200, 60)
+        else if (x >= 300 && x <= 500 && y >= 350 && y <= 410) {
+            System.exit(0);
+        }
+    }
+
     public void startGame() {
         // 当点击开始游戏时，进入加载状态
         stateManager.setState(GameState.LOADING);

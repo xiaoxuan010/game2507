@@ -19,5 +19,13 @@ public abstract class BaseGameState {
 
     public abstract void render(Graphics g);
 
-    public abstract void handleInput();
+    public void handleInput() {
+
+    }
+
+    // 新增带坐标参数的handleInput方法
+    public void handleInput(int x, int y) {
+        // 默认实现，子类可以重写此方法来处理带坐标的输入
+        handleInput();
+    }
 }

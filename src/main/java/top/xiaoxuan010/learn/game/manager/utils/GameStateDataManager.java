@@ -2,9 +2,11 @@ package top.xiaoxuan010.learn.game.manager.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class GameStateDataManager {
     private static GameStateDataManager instance = null;
 
@@ -15,6 +17,7 @@ public class GameStateDataManager {
     private int level; // 当前关卡
 
     private GameStateDataManager() {
+        log.info("Initializing GameStateDataManager");
         reset();
     }
 
