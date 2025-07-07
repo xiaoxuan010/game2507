@@ -2,16 +2,15 @@ package top.xiaoxuan010.learn.game.manager.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.dd.plist.NSDictionary;
 import com.dd.plist.NSNumber;
 import com.dd.plist.PropertyListParser;
 
-public class PlistImageUtil {
-    private static Map<String, BufferedImage> pImgCache = new HashMap<>();
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+public class PlistImageUtil {
     /**
      * 加载 plist 切片内的子图片
      * 
@@ -23,15 +22,10 @@ public class PlistImageUtil {
     public static BufferedImage loadPlistImage(String pImgPath, String cImgName) throws IOException {
         BufferedImage parentImg;
 
-        if (pImgCache.containsKey(pImgPath)) {
-            parentImg = pImgCache.get(pImgPath);
-        } else {
-            // 读取 plist 图片
-            parentImg = ImageResourceLoader.load(pImgPath);
-            if (parentImg == null) {
-                throw new RuntimeException("父图片 " + pImgPath + " 未找到");
-            }
-            pImgCache.put(pImgPath, parentImg);
+        // 读取 plist 图片
+        parentImg = ImageResourceLoader.load(pImgPath);
+        if (parentImg == null) {
+            throw new RuntimeException("父图片 " + pImgPath + " 未找到");
         }
 
         // 构建 plist 文件路径
