@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.element.components.RotatableElement;
+import top.xiaoxuan010.learn.game.element.utils.GameStateDataManager;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
@@ -61,6 +62,15 @@ public class CannonTower extends RotatableElement {
     }
 
     private void fire(int x, int y) {
+        // 检查金币是否足够（按炮台等级消耗金币）
+        GameStateDataManager gameState = GameStateDataManager.getInstance();
+        int cost = level; // 炮台等级即为消耗的金币数量
+        
+        if (!gameState.spendCoins(cost)) {
+            log.warn("金币不足！需要 {} 金币，当前金币：{}", cost, gameState.getCoins());
+            return; // 金币不足，无法发射
+        }
+        
         // 计算炮口位置
         setFiring(true); // 开始射击动画
         lastFireTime = System.currentTimeMillis();
@@ -77,7 +87,8 @@ public class CannonTower extends RotatableElement {
         Ripple ripple = new Ripple(x, y);
         elementManager.addElement(ripple, GameElementType.UI);
 
-        log.debug("Fire bullet from ({}, {}) to ({}, {}) with speed {}", muzzleX, muzzleY, x, y, speed);
+        log.debug("Fire bullet from ({}, {}) to ({}, {}) with speed {}, cost {} coins", 
+                 muzzleX, muzzleY, x, y, speed, cost);
     }
 
     private MuzzlePosition calculateMuzzlePosition() {

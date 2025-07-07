@@ -21,7 +21,6 @@ import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.CannonUpgradeBtn;
 import top.xiaoxuan010.learn.game.element.CoinsBg;
 import top.xiaoxuan010.learn.game.element.CountdownBg;
-import top.xiaoxuan010.learn.game.element.Fish;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.element.components.Digit;
 import top.xiaoxuan010.learn.game.element.utils.GameStateDataManager;
@@ -174,34 +173,6 @@ public class GameLoader {
         ELEMENT_MANAGER.addElement(cannonTower, GameElementType.PLAYER);
     }
 
-    public static void loadEnemies() {
-        // Initialize fish manager and generate initial fish group
-        FishManager fishManager = FishManager.getInstance();
-        fishManager.spawnInitialFishes();
-        // Create some level 1 fish
-        for (int i = 0; i < 3; i++) {
-            Fish fish = new Fish(100 + i * 120, 100, 80, 60, 1);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-
-        // Create some level 2 fish (fish.lv2 series)
-        for (int i = 0; i < 4; i++) {
-            Fish fish = new Fish(150 + i * 120, 200, 100, 80, 2);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-
-        // Create more level 2 fish at different positions
-        for (int i = 0; i < 3; i++) {
-            Fish fish = new Fish(80 + i * 150, 350, 100, 80, 2);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-
-        // Create some moving level 2 fish
-        for (int i = 0; i < 2; i++) {
-            Fish fish = new Fish(50 + i * 200, 450, 100, 80, 2);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-    }
 
     public static void loadUI() {
         GameStateDataManager gameStateManager = GameStateDataManager.getInstance();

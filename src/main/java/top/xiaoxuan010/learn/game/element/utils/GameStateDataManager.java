@@ -28,7 +28,7 @@ public class GameStateDataManager extends GameElement {
 
     public void reset() {
         gameStartTime = System.currentTimeMillis();
-        coins = 0;
+        coins = 100; // 初始金币设置为100
         score = 0;
         level = 1;
     }
