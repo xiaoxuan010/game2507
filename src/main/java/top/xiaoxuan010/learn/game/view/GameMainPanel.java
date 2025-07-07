@@ -7,10 +7,12 @@ import javax.swing.JPanel;
 
 import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
+import top.xiaoxuan010.learn.game.manager.FishManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 
 public class GameMainPanel extends JPanel implements Runnable {
     private ElementManager elementManager;
+    private FishManager fishManager;
 
     public GameMainPanel() {
         init();
@@ -18,6 +20,7 @@ public class GameMainPanel extends JPanel implements Runnable {
 
     public void init() {
         elementManager = ElementManager.getInstance();
+        fishManager = FishManager.getInstance();
     }
 
     @Override
@@ -37,7 +40,11 @@ public class GameMainPanel extends JPanel implements Runnable {
     public void run() {
         while (true) {
             try {
-                Thread.sleep(16);
+                Thread.sleep(16); // 约60FPS
+                
+                // 更新鱼类管理器
+                fishManager.update();
+                
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

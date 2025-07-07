@@ -5,11 +5,13 @@ import java.util.Map;
 
 import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
+import top.xiaoxuan010.learn.game.manager.FishManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 public class GameMainThread extends Thread {
     private final ElementManager elementManager = ElementManager.getInstance();
+    private final FishManager fishManager = FishManager.getInstance();
 
     @Override
     public void run() {
@@ -32,6 +34,9 @@ public class GameMainThread extends Thread {
         while (true) {
             long time = System.currentTimeMillis();
 
+            // 更新鱼类管理器
+            fishManager.update();
+
             Map<GameElementType, List<GameElement>> gameElements = elementManager.getGameElements();
             gameElements.forEach((_, elements) -> {
                 elementUpdate(elements, time);
@@ -39,6 +44,7 @@ public class GameMainThread extends Thread {
 
             collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.ENEMY));
             collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.MAP));
+            collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.FISH));
 
             try {
                 sleep(16);
