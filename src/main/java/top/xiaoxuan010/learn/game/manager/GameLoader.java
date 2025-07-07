@@ -13,7 +13,11 @@ import top.xiaoxuan010.learn.game.element.CannonBg;
 import top.xiaoxuan010.learn.game.element.CannonDowngradeBtn;
 import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.CannonUpgradeBtn;
+import top.xiaoxuan010.learn.game.element.CoinsBg;
+import top.xiaoxuan010.learn.game.element.CountdownBg;
+import top.xiaoxuan010.learn.game.element.Digit;
 import top.xiaoxuan010.learn.game.element.GameBackground;
+import top.xiaoxuan010.learn.game.element.GameStateManager;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
 @Slf4j
@@ -62,11 +66,35 @@ public class GameLoader {
     }
 
     public static void loadUI() {
+        GameStateManager gameStateManager = GameStateManager.getInstance();
+        gameStateManager.reset();
+
         CannonUpgradeBtn cannonUpgradeBtn = new CannonUpgradeBtn();
         ELEMENT_MANAGER.addElement(cannonUpgradeBtn, GameElementType.UI);
         CannonDowngradeBtn cannonDowngradeBtn = new CannonDowngradeBtn();
         ELEMENT_MANAGER.addElement(cannonDowngradeBtn, GameElementType.UI);
         CannonBg cannonBg = new CannonBg();
         ELEMENT_MANAGER.addElement(cannonBg, GameElementType.MAP);
+
+        // 加载金币背景和数字显示
+        CoinsBg coinsBackground = new CoinsBg();
+        ELEMENT_MANAGER.addElement(coinsBackground, GameElementType.MAP);
+        Digit digit1 = new Digit(590, 435, () -> (GameStateManager.getInstance().getCoins() / 100) % 10); // 百位
+        ELEMENT_MANAGER.addElement(digit1, GameElementType.UI);
+        Digit digit2 = new Digit(605, 435, () -> (GameStateManager.getInstance().getCoins() / 10) % 10); // 十位
+        ELEMENT_MANAGER.addElement(digit2, GameElementType.UI);
+        Digit digit3 = new Digit(620, 435, () -> GameStateManager.getInstance().getCoins() % 10); // 个位
+        ELEMENT_MANAGER.addElement(digit3, GameElementType.UI);
+
+        // 加载时间背景和数字显示
+        CountdownBg countdownBg = new CountdownBg();
+        ELEMENT_MANAGER.addElement(countdownBg, GameElementType.MAP);
+        Digit timeDigit1 = new Digit(165, 435,
+                () -> (GameStateManager.getInstance().getGameCountdown() / 10));
+        ELEMENT_MANAGER.addElement(timeDigit1, GameElementType.UI);
+        Digit timeDigit2 = new Digit(180, 435,
+                () -> (GameStateManager.getInstance().getGameCountdown() % 10));
+        ELEMENT_MANAGER.addElement(timeDigit2, GameElementType.UI);
+
     }
 }

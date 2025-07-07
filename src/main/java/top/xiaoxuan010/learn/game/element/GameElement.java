@@ -28,7 +28,18 @@ public abstract class GameElement {
         this.icon = icon;
     }
 
+    public GameElement(int x, int y, ImageIcon icon) {
+        this(x, y, -1, -1, icon);
+        if (icon != null) {
+            this.width = icon.getIconWidth();
+            this.height = icon.getIconHeight();
+        }
+    }
+
     public void draw(Graphics g) {
+        if (g == null || this.getIcon() == null) {
+            return;
+        }
         g.drawImage(this.getIcon().getImage(), getX(), getY(), getWidth(), getHeight(), null);
     }
 
