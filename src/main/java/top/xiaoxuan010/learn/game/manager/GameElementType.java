@@ -6,9 +6,9 @@ package top.xiaoxuan010.learn.game.manager;
  */
 public enum GameElementType {
     MAP,
-    ENEMY,
+    FISH,
     BULLET,
     UI,
     PLAYER,
-    FISH,
+ 
 }

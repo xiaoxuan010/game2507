@@ -111,21 +111,23 @@ public class FishManager {
             x = 950 + offset; // 从右边更远的地方开始，加上偏移
         }
         
-        // Y坐标在屏幕底部上方20%以上的区域，假设屏幕高度为600像素
-        // 底部20% = 600 * 0.2 = 120像素，所以Y坐标范围是 50 到 (600-120) = 480
-        y = random.nextInt(380) + 50; // 50-430范围内，确保在屏幕底部上方20%以上
+        
+        // Y坐标设置 - 确保鱼出现在屏幕中上部分，避免与底部UI重叠
+        // 假设屏幕高度600像素，底部UI占用约100像素，所以有效游戏区域是0-500
+        // 让鱼出现在上方60%的区域，即50-350像素范围内
+        y = random.nextInt(250) + 80; // 80-330范围，避免太靠近顶部和底部UI
         
         // 根据鱼的类型设置大小
         int width, height;
         if (selectedFishIndex < 4) { // fish01-fish04 小鱼
+            width = 40;
+            height = 20;
+        } else if (selectedFishIndex < 8) { // fish05-fish08 中等鱼
             width = 60;
             height = 40;
-        } else if (selectedFishIndex < 8) { // fish05-fish08 中等鱼
-            width = 80;
-            height = 60;
         } else { // fish09-fish16 大鱼
-            width = 100;
-            height = 80;
+            width = 70;
+            height = 55;
         }
         
         // 创建鱼

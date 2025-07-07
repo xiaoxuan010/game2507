@@ -26,7 +26,6 @@ public class GameMainThread extends Thread {
         GameLoader.loadImages();
         GameLoader.loadBackground(9);
         GameLoader.loadPlayer();
-        GameLoader.loadEnemies();
         GameLoader.loadUI();
     }
 
@@ -42,7 +41,6 @@ public class GameMainThread extends Thread {
                 elementUpdate(elements, time);
             });
 
-            collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.ENEMY));
             collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.MAP));
             collisionDetection(gameElements.get(GameElementType.BULLET), gameElements.get(GameElementType.FISH));
 

@@ -6,7 +6,6 @@ import top.xiaoxuan010.learn.game.manager.GameLoader;
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 
 public class Fish extends GameElement {
     private int level;
@@ -24,6 +23,14 @@ public class Fish extends GameElement {
     private boolean movingRight;
     private long spawnTime;
     private boolean active;
+    
+    // 捕获相关属性
+    private boolean isCaught;
+    private int catchAnimationFrame;
+    private int maxCatchAnimationFrames;
+    private long catchStartTime;
+    private static final int CATCH_ANIMATION_SPEED = 300; // 捕获动画速度（毫秒）
+    private static final long CATCH_ANIMATION_DURATION = 1000; // 捕获动画持续时间（毫秒）
     
     public Fish(int x, int y, int width, int height, int level, String fishType) {
         super(x, y, width, height, null);
@@ -50,13 +57,25 @@ public class Fish extends GameElement {
     }
     
     private void updateIcon() {
-        String iconKey = "fish.lv" + level + "[" + animationFrame + "]";
+        String iconKey;
+        if (isCaught) {
+            // 捕获动画
+            iconKey = "fish.lv" + level + "_catch[" + catchAnimationFrame + "]";
+        } else {
+            // 正常游动动画
+            iconKey = "fish.lv" + level + "[" + animationFrame + "]";
+        }
+        
         ImageIcon icon = GameLoader.imgMap.get(iconKey);
         if (icon != null) {
             this.setIcon(icon);
         } else {
             // 如果找不到动画帧，尝试使用静态图片
-            iconKey = "fish.lv" + level + "[0]";
+            if (isCaught) {
+                iconKey = "fish.lv" + level + "_catch[0]";
+            } else {
+                iconKey = "fish.lv" + level + "[0]";
+            }
             icon = GameLoader.imgMap.get(iconKey);
             if (icon != null) {
                 this.setIcon(icon);
@@ -66,15 +85,36 @@ public class Fish extends GameElement {
     
     public void updateAnimation() {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastFrameTime > ANIMATION_SPEED) {
-            animationFrame = (animationFrame + 1) % maxAnimationFrames;
+        
+        if (isCaught) {
+            // 捕获动画处理
+            updateCatchAnimation(currentTime);
+        } else {
+            // 正常游动动画
+            if (currentTime - lastFrameTime > ANIMATION_SPEED) {
+                animationFrame = (animationFrame + 1) % maxAnimationFrames;
+                updateIcon();
+                lastFrameTime = currentTime;
+            }
+        }
+    }
+    
+    private void updateCatchAnimation(long currentTime) {
+        if (currentTime - catchStartTime > CATCH_ANIMATION_DURATION) {
+            // 捕获动画播放完毕，标记为非活动状态
+            active = false;
+            return;
+        }
+        
+        if (currentTime - lastFrameTime > CATCH_ANIMATION_SPEED) {
+            catchAnimationFrame = (catchAnimationFrame + 1) % maxCatchAnimationFrames;
             updateIcon();
             lastFrameTime = currentTime;
         }
     }
     
     public void updateMovement() {
-        if (!active) return;
+        if (!active || isCaught) return; // 如果被捕获，停止移动
         
         // 更新位置
         currentX += speedX;
@@ -92,12 +132,12 @@ public class Fish extends GameElement {
         }
         
         // 垂直边界检查，防止鱼游出可见区域
-        if (currentY < 50 || currentY > 550) {
+        if (currentY < 80 || currentY > 400) {
             // 反转垂直方向
             speedY = -speedY;
             // 调整位置确保在边界内
-            if (currentY < 50) currentY = 50;
-            if (currentY > 550) currentY = 550;
+            if (currentY < 80) currentY = 80;
+            if (currentY > 400) currentY = 400;
         }
         
         // 更新实际位置
@@ -179,5 +219,52 @@ public class Fish extends GameElement {
     
     public long getSpawnTime() {
         return spawnTime;
+    }
+    
+    // 捕获相关方法
+    public void setCaught() {
+        if (!isCaught) {
+            this.isCaught = true;
+            this.catchAnimationFrame = 0;
+            this.maxCatchAnimationFrames = 5; // 捕获动画通常5帧
+            this.catchStartTime = System.currentTimeMillis();
+            this.lastFrameTime = this.catchStartTime;
+            System.out.println("鱼 " + fishType + " 被捕获！开始播放捕获动画");
+        }
+    }
+    
+    public boolean isCaught() {
+        return isCaught;
+    }
+    
+    public int getGoldValue() {
+        // 根据鱼的等级返回金币价值
+        switch (level) {
+            case 1: return 2;   // 小黄鱼
+            case 2: return 3;   // 比目鱼
+            case 3: return 5;   // 小丑鱼
+            case 4: return 8;   // 红鱼
+            case 5: return 12;  // 蓝鱼
+            case 6: return 18;  // 紫鱼
+            case 7: return 25;  // 黑鱼
+            case 8: return 35;  // 银龙鱼
+            case 9: return 50;  // 金龙鱼
+            case 10: return 100; // 鲨鱼
+            default: return 1;
+        }
+    }
+    
+    @Override
+    public void onCollision(GameElement other) {
+        if (other instanceof FishNet && !isCaught) {
+            // 鱼被渔网捕获
+            setCaught();
+            
+            // 增加金币
+            int goldValue = getGoldValue();
+            top.xiaoxuan010.learn.game.element.utils.GameStateManager.getInstance().addCoins(goldValue);
+            
+            System.out.println("鱼 " + fishType + " 被捕获！获得 " + goldValue + " 金币");
+        }
     }
 }

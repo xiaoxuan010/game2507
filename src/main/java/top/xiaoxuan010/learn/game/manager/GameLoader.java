@@ -18,7 +18,6 @@ import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.CannonUpgradeBtn;
 import top.xiaoxuan010.learn.game.element.CoinsBg;
 import top.xiaoxuan010.learn.game.element.CountdownBg;
-import top.xiaoxuan010.learn.game.element.Fish;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.element.components.Digit;
 import top.xiaoxuan010.learn.game.element.utils.GameStateManager;
@@ -91,34 +90,7 @@ public class GameLoader {
         ELEMENT_MANAGER.addElement(cannonTower, GameElementType.PLAYER);
     }
 
-    public static void loadEnemies() {
-        // 初始化鱼类管理器并生成初始鱼群
-        FishManager fishManager = FishManager.getInstance();
-        fishManager.spawnInitialFishes();
-        // 创建一些1级鱼
-        for (int i = 0; i < 3; i++) {
-            Fish fish = new Fish(100 + i * 120, 100, 80, 60, 1);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
 
-        // 创建一些2级鱼 (fish.lv2系列)
-        for (int i = 0; i < 4; i++) {
-            Fish fish = new Fish(150 + i * 120, 200, 100, 80, 2);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-
-        // 创建更多不同位置的2级鱼
-        for (int i = 0; i < 3; i++) {
-            Fish fish = new Fish(80 + i * 150, 350, 100, 80, 2);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-
-        // 创建一些移动的2级鱼
-        for (int i = 0; i < 2; i++) {
-            Fish fish = new Fish(50 + i * 200, 450, 100, 80, 2);
-            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
-        }
-    }
 
     public static void loadUI() {
         GameStateManager gameStateManager = GameStateManager.getInstance();
