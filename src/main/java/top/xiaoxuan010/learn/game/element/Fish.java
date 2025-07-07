@@ -24,6 +24,18 @@ public class Fish extends GameElement {
     private long spawnTime;
     private boolean active;
     
+    // 移动模式相关属性
+    private String movementType;
+    private float originalSpeedX;
+    private float originalSpeedY;
+    private long movementStartTime;
+    private float waveAmplitude;
+    private float waveFrequency;
+    private float circleRadius;
+    private float circleAngle;
+    private float zigzagCounter;
+    private float zigzagDirection;
+    
     // 捕获相关属性
     private boolean isCaught;
     private int catchAnimationFrame;
@@ -43,11 +55,17 @@ public class Fish extends GameElement {
         // 初始化游动相关属性
         this.currentX = x;
         this.currentY = y;
-        this.speedX = (float) (Math.random() * 1.5 + 1); // 1-2.5像素/帧的速度，方向稍后由setMovingDirection设置
-        this.speedY = (float) (Math.random() * 0.3 - 0.15); // 轻微的垂直游动
+        this.speedX = (float) (Math.random() * 0.8 + 0.5); // 0.5-1.3像素/帧的速度，减慢速度
+        this.speedY = (float) (Math.random() * 0.2 - 0.1); // 更轻微的垂直游动
         this.movingRight = true; // 默认向右，稍后会根据生成方向调整
         this.spawnTime = System.currentTimeMillis();
         this.active = true;
+        
+        // 初始化移动模式
+        initializeMovementType();
+        this.originalSpeedX = this.speedX;
+        this.originalSpeedY = this.speedY;
+        this.movementStartTime = System.currentTimeMillis();
         
         updateIcon();
     }
@@ -116,9 +134,30 @@ public class Fish extends GameElement {
     public void updateMovement() {
         if (!active || isCaught) return; // 如果被捕获，停止移动
         
-        // 更新位置
-        currentX += speedX;
-        currentY += speedY;
+        // 根据移动类型执行不同的移动逻辑
+        switch (movementType) {
+            case "straight":
+                updateStraightMovement();
+                break;
+            case "wave":
+                updateWaveMovement();
+                break;
+            case "zigzag":
+                updateZigzagMovement();
+                break;
+            case "circle":
+                updateCircleMovement();
+                break;
+            case "dash":
+                updateDashMovement();
+                break;
+            case "slow_sway":
+                updateSlowSwayMovement();
+                break;
+            default:
+                updateStraightMovement();
+                break;
+        }
         
         // 边界检查 - 给更大的边界范围，确保鱼能完全游过屏幕
         if (movingRight && currentX > 850) {
@@ -132,22 +171,20 @@ public class Fish extends GameElement {
         }
         
         // 垂直边界检查，防止鱼游出可见区域
-        if (currentY < 80 || currentY > 400) {
-            // 反转垂直方向
-            speedY = -speedY;
+        if (currentY < 160 || currentY > 330) {
+            // 对于某些移动模式，需要特殊处理
+            if (movementType.equals("wave") || movementType.equals("slow_sway")) {
+                // 波浪模式时反转垂直方向
+                speedY = -speedY;
+            }
             // 调整位置确保在边界内
-            if (currentY < 80) currentY = 80;
-            if (currentY > 400) currentY = 400;
+            if (currentY < 160) currentY = 160;
+            if (currentY > 330) currentY = 330;
         }
         
         // 更新实际位置
         setX((int) currentX);
         setY((int) currentY);
-        
-        // 轻微的垂直波动 - 减少频率，使游动更自然
-        if (Math.random() < 0.005) { // 0.5%的概率改变垂直方向
-            speedY = (float) (Math.random() * 0.4 - 0.2);
-        }
     }
 
     @Override
@@ -252,29 +289,6 @@ public class Fish extends GameElement {
         return isCaught;
     }
     
-    public int getGoldValue() {
-        // 根据鱼的等级返回金币价值
-        switch (level) {
-            case 1: return 2;   
-            case 2: return 3;  
-            case 3: return 5;   
-            case 4: return 8;  
-            case 5: return 12;  
-            case 6: return 18;  
-            case 7: return 25;   
-            case 8: return 35;   
-            case 9: return 50;  
-            case 10: return 60; 
-            case 11: return 70; 
-            case 12: return 80; 
-            case 13: return 100; 
-            case 14: return 120; 
-            case 15: return 150; 
-            case 16: return 180; 
-            case 17: return 210;
-            default: return 1; // 默认值
-        }
-    }
     
     @Override
     public void onCollision(GameElement other) {
@@ -288,5 +302,115 @@ public class Fish extends GameElement {
             
             System.out.println("鱼 " + fishType + " (等级" + level + ") 被捕获！获得 " + coinReward + " 金币");
         }
+    }
+    
+    /**
+     * 根据鱼的类型初始化移动模式
+     * 17种鱼分为6组，每组有不同的移动模式
+     */
+    private void initializeMovementType() {
+        if (fishType.equals("fish01") || fishType.equals("fish02") || fishType.equals("fish03")) {
+            // 第1组：直线游动（默认模式）
+            movementType = "straight";
+        } else if (fishType.equals("fish04") || fishType.equals("fish05") || fishType.equals("fish06")) {
+            // 第2组：波浪游动
+            movementType = "wave";
+            waveAmplitude = 15 + (float)(Math.random() * 20); // 15-35像素振幅，减小振幅
+            waveFrequency = 0.015f + (float)(Math.random() * 0.02f); // 降低频率
+        } else if (fishType.equals("fish07") || fishType.equals("fish08") || fishType.equals("fish09")) {
+            // 第3组：之字形游动
+            movementType = "zigzag";
+            zigzagCounter = 0;
+            zigzagDirection = 1;
+        } else if (fishType.equals("fish10") || fishType.equals("fish11") || fishType.equals("fish12")) {
+            // 第4组：圆形游动
+            movementType = "circle";
+            circleRadius = 20 + (float)(Math.random() * 25); // 20-45像素半径，减小半径
+            circleAngle = 0;
+        } else if (fishType.equals("fish13") || fishType.equals("fish14")) {
+            // 第5组：急速冲刺
+            movementType = "dash";
+            speedX *= 1.8f; // 冲刺速度降低到1.8倍
+        } else {
+            // 第6组：fish15, fish16 - 缓慢摆动
+            movementType = "slow_sway";
+            speedX *= 0.4f; // 进一步减慢速度
+            waveAmplitude = 10; // 减小摆动幅度
+            waveFrequency = 0.008f; // 更低频率
+        }
+    }
+    
+    /**
+     * 直线游动 - 基本的直线移动模式
+     */
+    private void updateStraightMovement() {
+        currentX += speedX;
+        currentY += speedY;
+        
+        // 轻微的垂直波动
+        if (Math.random() < 0.005) {
+            speedY = (float) (Math.random() * 0.4 - 0.2);
+        }
+    }
+    
+    /**
+     * 波浪游动 - 呈正弦波形游动
+     */
+    private void updateWaveMovement() {
+        long currentTime = System.currentTimeMillis();
+        float timeDiff = (currentTime - movementStartTime) * 0.001f;
+        
+        currentX += speedX;
+        currentY += originalSpeedY + waveAmplitude * (float)Math.sin(timeDiff * waveFrequency * 2 * Math.PI);
+    }
+    
+    /**
+     * 之字形游动 - 呈锯齿状游动
+     */
+    private void updateZigzagMovement() {
+        currentX += speedX;
+        
+        zigzagCounter += speedX;
+        if (zigzagCounter > 50) { // 每50像素改变一次方向
+            zigzagDirection *= -1;
+            zigzagCounter = 0;
+        }
+        
+        currentY += zigzagDirection * 2;
+    }
+    
+    /**
+     * 圆形游动 - 呈小圆圈游动
+     */
+    private void updateCircleMovement() {
+        float centerX = currentX + speedX;
+        
+        circleAngle += 0.1f;
+        currentX = centerX + circleRadius * (float)Math.cos(circleAngle);
+        currentY += speedY + circleRadius * (float)Math.sin(circleAngle) * 0.5f;
+    }
+    
+    /**
+     * 急速冲刺 - 快速直线游动
+     */
+    private void updateDashMovement() {
+        currentX += speedX;
+        currentY += speedY;
+        
+        // 偶尔加速
+        if (Math.random() < 0.01) {
+            speedX *= 1.1f; // 减少加速幅度
+        }
+    }
+    
+    /**
+     * 缓慢摆动 - 慢速波浪游动
+     */
+    private void updateSlowSwayMovement() {
+        long currentTime = System.currentTimeMillis();
+        float timeDiff = (currentTime - movementStartTime) * 0.001f;
+        
+        currentX += speedX;
+        currentY += originalSpeedY + waveAmplitude * (float)Math.sin(timeDiff * waveFrequency * 2 * Math.PI);
     }
 }

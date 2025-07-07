@@ -28,9 +28,9 @@ public class FishManager {
         10, 10, 10, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
     };
     
-    private static final long BATCH_SPAWN_INTERVAL = 5000; // 批次生成间隔（毫秒）
-    private static final int MIN_BATCH_SIZE = 2; // 最小批次大小
-    private static final int MAX_BATCH_SIZE = 5; // 最大批次大小
+    private static final long BATCH_SPAWN_INTERVAL = 8000; // 批次生成间隔增加到8秒
+    private static final int MIN_BATCH_SIZE = 1; // 最小批次大小减少到1
+    private static final int MAX_BATCH_SIZE = 3; // 最大批次大小减少到3
     
     private FishManager() {
         this.activeFishes = new ArrayList<>();
@@ -76,7 +76,7 @@ public class FishManager {
         System.out.println("生成一批鱼，数量: " + batchSize + "，方向: " + (fromLeft ? "从左到右" : "从右到左"));
         
         for (int i = 0; i < batchSize; i++) {
-            spawnSingleFish(fromLeft, i * 50); // 每条鱼间隔50像素
+            spawnSingleFish(fromLeft, i * 80); // 增加鱼之间的间隔到80像素
         }
     }
     
@@ -114,8 +114,8 @@ public class FishManager {
         
         // Y坐标设置 - 确保鱼出现在屏幕中上部分，避免与底部UI重叠
         // 假设屏幕高度600像素，底部UI占用约100像素，所以有效游戏区域是0-500
-        // 让鱼出现在上方60%的区域，即50-350像素范围内
-        y = random.nextInt(250) + 80; // 80-330范围，避免太靠近顶部和底部UI
+        // 让鱼出现在上方60%的区域，现在范围向上移动80像素
+        y = random.nextInt(170) + 160; // 160-330范围，向上移动80像素
         
         // 根据鱼的类型设置大小
         int width, height;
