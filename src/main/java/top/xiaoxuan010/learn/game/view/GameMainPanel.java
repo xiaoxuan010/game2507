@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import top.xiaoxuan010.learn.game.element.GameElement;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 

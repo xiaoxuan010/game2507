@@ -15,9 +15,9 @@ import top.xiaoxuan010.learn.game.element.CannonTower;
 import top.xiaoxuan010.learn.game.element.CannonUpgradeBtn;
 import top.xiaoxuan010.learn.game.element.CoinsBg;
 import top.xiaoxuan010.learn.game.element.CountdownBg;
-import top.xiaoxuan010.learn.game.element.Digit;
 import top.xiaoxuan010.learn.game.element.GameBackground;
-import top.xiaoxuan010.learn.game.element.GameStateManager;
+import top.xiaoxuan010.learn.game.element.components.Digit;
+import top.xiaoxuan010.learn.game.element.utils.GameStateManager;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
 @Slf4j

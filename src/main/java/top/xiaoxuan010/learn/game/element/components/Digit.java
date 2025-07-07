@@ -1,4 +1,4 @@
-package top.xiaoxuan010.learn.game.element;
+package top.xiaoxuan010.learn.game.element.components;
 
 import lombok.Getter;
 import lombok.Setter;

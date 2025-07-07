@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 @Getter

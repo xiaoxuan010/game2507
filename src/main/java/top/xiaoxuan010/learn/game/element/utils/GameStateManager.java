@@ -1,7 +1,8 @@
-package top.xiaoxuan010.learn.game.element;
+package top.xiaoxuan010.learn.game.element.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
 
 @Getter
 @Setter
