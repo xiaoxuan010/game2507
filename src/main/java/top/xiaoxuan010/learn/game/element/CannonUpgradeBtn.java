@@ -14,10 +14,8 @@ public class CannonUpgradeBtn extends ImageButton {
 
     public CannonUpgradeBtn() {
         this.setIcon(GameLoader.imgMap.get("cannon.upgrade"));
-        this.setWidth(getIcon().getIconWidth());
-        this.setHeight(getIcon().getIconHeight());
 
-        this.setX(425);
+        this.setX(419);
         this.setY(415);
     }
 

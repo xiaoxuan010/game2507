@@ -14,10 +14,8 @@ public class CannonDowngradeBtn extends ImageButton {
 
     public CannonDowngradeBtn() {
         this.setIcon(GameLoader.imgMap.get("cannon.downgrade"));
-        this.setWidth(getIcon().getIconWidth());
-        this.setHeight(getIcon().getIconHeight());
 
-        this.setX(250);
+        this.setX(265);
         this.setY(415);
     }
 

@@ -31,8 +31,6 @@ public class Bullet extends RotatableElement {
 
         if (!animation.getFrames().isEmpty()) {
             this.setIcon(animation.getCurrentFrame());
-            this.setWidth(getIcon().getIconWidth());
-            this.setHeight(getIcon().getIconHeight());
         }
 
         // 设置中心点坐标

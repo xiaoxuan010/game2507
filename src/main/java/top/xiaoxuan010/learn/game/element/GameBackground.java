@@ -22,9 +22,6 @@ public class GameBackground extends GameElement {
         gameIndex--;
 
         this.setIcon(GameLoader.imgMap.get("background.game." + gameIndex));
-
-        this.setWidth(this.getIcon().getIconWidth());
-        this.setHeight(this.getIcon().getIconHeight());
     }
 
     @Override
