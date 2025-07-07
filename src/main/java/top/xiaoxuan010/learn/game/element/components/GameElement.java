@@ -1,4 +1,4 @@
-package top.xiaoxuan010.learn.game.element;
+package top.xiaoxuan010.learn.game.element.components;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -28,7 +28,20 @@ public abstract class GameElement {
         this.icon = icon;
     }
 
-    public abstract void draw(Graphics g);
+    public GameElement(int x, int y, ImageIcon icon) {
+        this(x, y, -1, -1, icon);
+        if (icon != null) {
+            this.width = icon.getIconWidth();
+            this.height = icon.getIconHeight();
+        }
+    }
+
+    public void draw(Graphics g) {
+        if (g == null || this.getIcon() == null) {
+            return;
+        }
+        g.drawImage(this.getIcon().getImage(), getX(), getY(), getWidth(), getHeight(), null);
+    }
 
     /**
      * 当按键被点击时调用的方法。
@@ -99,4 +112,11 @@ public abstract class GameElement {
         return false;
     }
 
+    public void setIcon(ImageIcon icon) {
+        this.icon = icon;
+        if (icon != null) {
+            this.width = icon.getIconWidth();
+            this.height = icon.getIconHeight();
+        }
+    }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import top.xiaoxuan010.learn.game.element.FrameAnimation;
+import top.xiaoxuan010.learn.game.element.utils.FrameAnimation;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 public class FrameAnimationLoader {

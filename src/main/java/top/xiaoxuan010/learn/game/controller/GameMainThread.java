@@ -3,7 +3,7 @@ package top.xiaoxuan010.learn.game.controller;
 import java.util.List;
 import java.util.Map;
 
-import top.xiaoxuan010.learn.game.element.GameElement;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 import top.xiaoxuan010.learn.game.manager.GameLoader;

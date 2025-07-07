@@ -1,6 +1,8 @@
-package top.xiaoxuan010.learn.game.element;
+package top.xiaoxuan010.learn.game.element.components;
 
 import java.awt.Graphics;
+
+import top.xiaoxuan010.learn.game.element.utils.Clickable;
 
 public abstract class ImageButton extends GameElement implements Clickable {
     @Override

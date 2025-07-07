@@ -3,7 +3,6 @@ package top.xiaoxuan010.learn.game.manager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -59,24 +58,29 @@ public class GameLoader {
     }
 
     public static void loadEnemies() {
-        // 使用配置文件信息生成鱼类
-        List<GameLevelConfig.FishSpawnInfo> fishSpawnInfos = GameLevelConfig.generateFishSpawnInfo();
-        
-        log.info("Loading {} fish according to level configuration", fishSpawnInfos.size());
-        
-        for (GameLevelConfig.FishSpawnInfo fishInfo : fishSpawnInfos) {
-            Fish fish = new Fish(
-                fishInfo.x, 
-                fishInfo.y, 
-                fishInfo.width, 
-                fishInfo.height, 
-                fishInfo.level,
-                fishInfo.fishType
-            );
+        // 创建一些1级鱼
+        for (int i = 0; i < 3; i++) {
+            Fish fish = new Fish(100 + i * 120, 100, 80, 60, 1);
             ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
         }
         
-        log.info("Successfully loaded {} fish to the game", fishSpawnInfos.size());
+        // 创建一些2级鱼 (fish.lv2系列)
+        for (int i = 0; i < 4; i++) {
+            Fish fish = new Fish(150 + i * 120, 200, 100, 80, 2);
+            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
+        }
+        
+        // 创建更多不同位置的2级鱼
+        for (int i = 0; i < 3; i++) {
+            Fish fish = new Fish(80 + i * 150, 350, 100, 80, 2);
+            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
+        }
+        
+        // 创建一些移动的2级鱼
+        for (int i = 0; i < 2; i++) {
+            Fish fish = new Fish(50 + i * 200, 450, 100, 80, 2);
+            ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
+        }
     }
 
     public static void loadUI() {

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import lombok.Getter;
 import lombok.Setter;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 @Getter
@@ -22,9 +23,6 @@ public class GameBackground extends GameElement {
         gameIndex--;
 
         this.setIcon(GameLoader.imgMap.get("background.game." + gameIndex));
-
-        this.setWidth(this.getIcon().getIconWidth());
-        this.setHeight(this.getIcon().getIconHeight());
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import top.xiaoxuan010.learn.game.element.GameElement;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
 
 @Getter
 public class ElementManager {

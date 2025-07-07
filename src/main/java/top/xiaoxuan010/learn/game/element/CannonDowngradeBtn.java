@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
 import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
+import top.xiaoxuan010.learn.game.element.components.GameElement;
+import top.xiaoxuan010.learn.game.element.components.ImageButton;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
@@ -14,10 +16,8 @@ public class CannonDowngradeBtn extends ImageButton {
 
     public CannonDowngradeBtn() {
         this.setIcon(GameLoader.imgMap.get("cannon.downgrade"));
-        this.setWidth(getIcon().getIconWidth());
-        this.setHeight(getIcon().getIconHeight());
 
-        this.setX(250);
+        this.setX(265);
         this.setY(415);
     }
 
