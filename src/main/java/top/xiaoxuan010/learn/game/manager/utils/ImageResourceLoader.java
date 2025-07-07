@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ImageResourceLoader {
     private static Map<String, BufferedImage> cache = new HashMap<>();
 
@@ -19,24 +22,32 @@ public class ImageResourceLoader {
      * @throws IOException 如果加载图片失败
      */
     public static BufferedImage load(String resourcePath) throws IOException {
+        long startTime = System.currentTimeMillis();
         try {
             if (cache.containsKey(resourcePath))
-            return cache.get(resourcePath);
+            {
+                log.trace("{} hits cache", resourcePath);
+                return cache.get(resourcePath);
+            }
 
-        BufferedImage img;
-        if (resourcePath.contains(":")) {
-            // plist切片
-            String[] parts = resourcePath.split(":");
-            img = PlistImageUtil.loadPlistImage(parts[0], parts[1]);
-        } else {
-            // 普通图片
-            img = ImageIO.read(ImageResourceLoader.class.getClassLoader().getResourceAsStream((resourcePath)));
+            BufferedImage img;
+            if (resourcePath.contains(":")) {
+                // plist切片
+                String[] parts = resourcePath.split(":");
+                img = PlistImageUtil.loadPlistImage(parts[0], parts[1]);
+            } else {
+                // 普通图片
+                img = ImageIO.read(ImageResourceLoader.class.getClassLoader().getResourceAsStream((resourcePath)));
+            }
+            cache.put(resourcePath, img);
+            log.trace("Cache Missed. Loaded image resource: {} in {} ms", resourcePath,
+                    System.currentTimeMillis() - startTime);
+            log.trace("Current cache size: {}", cache.size());
+            return img;
+        } catch (Exception e) {
+            log.error("Failed to load image resource: {}", resourcePath, e);
+            throw new IOException("Failed to Load: " + resourcePath, e);
         }
-        cache.put(resourcePath, img);
-        return img;
-    } catch (Exception e) {
-        throw new IOException("加载图片资源失败: " + resourcePath, e);
-    }
 
     }
 }

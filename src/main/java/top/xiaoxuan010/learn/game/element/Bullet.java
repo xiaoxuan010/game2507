@@ -29,7 +29,7 @@ public class Bullet extends RotatableElement {
         this.setDirection((float) Math.atan2(targetY - y, targetX - x));
 
         // 加载帧动画
-        animation = FrameAnimationLoader.load("bullet.lv" + bulletLevel);
+        animation = FrameAnimationLoader.load("bullet.lv" + bulletLevel, true);
 
         if (!animation.getFrames().isEmpty()) {
             this.setIcon(animation.getCurrentFrame());

@@ -73,6 +73,10 @@ public class CannonTower extends RotatableElement {
         Bullet bullet = Bullet.createCenteredBullet(muzzleX, muzzleY, x, y, speed, level);
         elementManager.addElement(bullet, GameElementType.BULLET);
 
+        // 创建涟漪
+        Ripple ripple = new Ripple(x, y);
+        elementManager.addElement(ripple, GameElementType.MAP);
+
         log.debug("Fire bullet from ({}, {}) to ({}, {}) with speed {}", muzzleX, muzzleY, x, y, speed);
     }
 
