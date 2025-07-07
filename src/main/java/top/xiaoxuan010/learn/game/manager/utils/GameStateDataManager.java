@@ -1,12 +1,11 @@
-package top.xiaoxuan010.learn.game.element.utils;
+package top.xiaoxuan010.learn.game.manager.utils;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.xiaoxuan010.learn.game.element.components.GameElement;
 
 @Getter
 @Setter
-public class GameStateDataManager extends GameElement {
+public class GameStateDataManager {
     private static GameStateDataManager instance = null;
 
     private long gameStartTime; // 游戏开始时间
@@ -49,7 +48,6 @@ public class GameStateDataManager extends GameElement {
         this.score += amount;
     }
 
-    @Override
     public void update(long time) {
         setCurrentTime(time);
     }

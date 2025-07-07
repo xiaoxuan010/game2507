@@ -11,12 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 import top.xiaoxuan010.learn.game.state.GameState;
 import top.xiaoxuan010.learn.game.state.GameStateManager;
+import top.xiaoxuan010.learn.game.utils.GraphicsUtils;
 
 @Slf4j
 public class LoadingState extends BaseGameState {
     private boolean loadingComplete = false;
-    private String loadingText = "正在游戏资源中";
-    private int loadingProgress = 0;
+    private String loadingText = "正在加载游戏资源...";
+    private Float loadingProgress = 0f;
 
     public LoadingState(GameStateManager stateManager) {
         super(stateManager);
@@ -26,7 +27,7 @@ public class LoadingState extends BaseGameState {
     public void enter() {
         log.info("Entering loading state");
         loadingComplete = false;
-        loadingProgress = 0;
+        loadingProgress = 0f;
 
         // 异步加载所有游戏资源
         new Thread(() -> {
@@ -64,28 +65,27 @@ public class LoadingState extends BaseGameState {
         // 使用预加载的字体
         Font loadingFont = GameLoader.fontMap.get("default");
         if (loadingFont != null) {
-            g.setFont(loadingFont.deriveFont(Font.BOLD, 24f));
+            g.setFont(loadingFont.deriveFont(Font.PLAIN, 24f));
         } else {
             g.setFont(new Font("微软雅黑", Font.BOLD, 24));
         }
 
         // 绘制加载文本
-        g.setColor(Color.WHITE);
         FontMetrics fm = g.getFontMetrics();
         int x = (800 - fm.stringWidth(loadingText)) / 2;
         int y = 300;
-        g.drawString(loadingText, x, y);
+        GraphicsUtils.drawStringWithOutline(g, loadingText, x, y, Color.WHITE, Color.BLACK);
 
         // 绘制进度条
         g.setColor(Color.GRAY);
-        g.fillRect(250, 350, 300, 20);
-        g.setColor(Color.GREEN);
-        g.fillRect(250, 350, (int) (300 * loadingProgress / 100.0), 20);
+        g.fillRect(250, 350, 300, 10);
+        g.setColor(Color.WHITE);
+        g.fillRect(250, 350, (int) (300 * loadingProgress / 100.0), 10);
 
         // 绘制进度百分比
-        String progressText = loadingProgress + "%";
+        String progressText = String.format("%.2f%%", loadingProgress);
         int progressX = (800 - fm.stringWidth(progressText)) / 2;
-        g.drawString(progressText, progressX, 400);
+        GraphicsUtils.drawStringWithOutline(g, progressText, progressX, 400, Color.WHITE, Color.BLACK);
     }
 
     @Override

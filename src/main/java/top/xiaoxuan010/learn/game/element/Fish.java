@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
 
 import top.xiaoxuan010.learn.game.element.components.GameElement;
-import top.xiaoxuan010.learn.game.element.utils.GameStateDataManager;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
+import top.xiaoxuan010.learn.game.manager.utils.GameStateDataManager;
 
 public class Fish extends GameElement {
     private int level;

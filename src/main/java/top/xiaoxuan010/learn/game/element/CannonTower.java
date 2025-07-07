@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.element.components.RotatableElement;
-import top.xiaoxuan010.learn.game.element.utils.GameStateDataManager;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
+import top.xiaoxuan010.learn.game.manager.utils.GameStateDataManager;
 
 @Slf4j
 @Setter
@@ -67,7 +67,7 @@ public class CannonTower extends RotatableElement {
         int cost = level; // 炮台等级即为消耗的金币数量
         
         if (!gameState.spendCoins(cost)) {
-            log.warn("金币不足！需要 {} 金币，当前金币：{}", cost, gameState.getCoins());
+            log.info("Insufficient coins! Need {} coins, current coins: {}", cost, gameState.getCoins());
             return; // 金币不足，无法发射
         }
         

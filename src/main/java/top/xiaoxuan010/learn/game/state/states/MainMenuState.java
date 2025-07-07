@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.manager.GameLoader;
 import top.xiaoxuan010.learn.game.state.GameState;
 import top.xiaoxuan010.learn.game.state.GameStateManager;
+import top.xiaoxuan010.learn.game.utils.GraphicsUtils;
 
 @Slf4j
 public class MainMenuState extends BaseGameState {
@@ -31,7 +32,7 @@ public class MainMenuState extends BaseGameState {
 
     @Override
     public void update(long deltaTime) {
-        // 主菜单暂时不需要更新逻辑
+
     }
 
     @Override
@@ -48,7 +49,7 @@ public class MainMenuState extends BaseGameState {
         // 使用预加载的字体
         Font menuFont = GameLoader.fontMap.get("default");
         if (menuFont != null) {
-            g.setFont(menuFont.deriveFont(Font.BOLD, 36f));
+            g.setFont(menuFont.deriveFont(72f));
         } else {
             g.setFont(new Font("微软雅黑", Font.BOLD, 36));
         }
@@ -58,16 +59,16 @@ public class MainMenuState extends BaseGameState {
         String title = "捕鱼达人";
         FontMetrics titleFm = g.getFontMetrics();
         int titleX = (800 - titleFm.stringWidth(title)) / 2;
-        g.drawString(title, titleX, 150);
+        GraphicsUtils.drawStringWithOutline(g, title, titleX, 150, Color.WHITE, Color.BLACK);
 
         // 绘制开始按钮
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(0, 200, 83)); // 深绿色
         g.fillRect(300, 250, 200, 60);
         g.setColor(Color.WHITE);
         g.drawRect(300, 250, 200, 60);
 
         if (menuFont != null) {
-            g.setFont(menuFont.deriveFont(Font.BOLD, 20f));
+            g.setFont(menuFont.deriveFont(20f));
         } else {
             g.setFont(new Font("微软雅黑", Font.BOLD, 20));
         }
@@ -79,7 +80,7 @@ public class MainMenuState extends BaseGameState {
         g.drawString(startText, startX, startY);
 
         // 绘制退出按钮
-        g.setColor(Color.RED);
+        g.setColor(Color.GRAY);
         g.fillRect(300, 350, 200, 60);
         g.setColor(Color.WHITE);
         g.drawRect(300, 350, 200, 60);
