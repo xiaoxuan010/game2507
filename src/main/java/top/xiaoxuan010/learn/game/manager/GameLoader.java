@@ -24,6 +24,8 @@ public class GameLoader {
     public static Map<String, ImageIcon> imgMap = new HashMap<>();
 
     public static void loadImages() {
+        long startTime = System.currentTimeMillis();
+        log.trace("Start loading image resources...");
         try (InputStream inputStream = GameLoader.class.getClassLoader()
                 .getResourceAsStream("images/images.properties")) {
             if (inputStream == null) {
@@ -37,9 +39,12 @@ public class GameLoader {
                 if (value != null) {
                     ImageIcon icon = new ImageIcon(ImageResourceLoader.load(imagePath));
                     imgMap.put(key, icon);
+                    log.debug("Loaded image: key={}, path={}", key, imagePath);
                 }
             }
+            long endTime = System.currentTimeMillis();
             log.info("Image resources loaded successfully, total {} images loaded", imgMap.size());
+            log.debug("Finished loading images in {} ms", (endTime - startTime));
         } catch (IOException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();

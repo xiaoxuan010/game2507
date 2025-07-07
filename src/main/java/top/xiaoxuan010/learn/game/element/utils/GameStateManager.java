@@ -56,7 +56,7 @@ public class GameStateManager extends GameElement {
 
     public int getGameCountdown() {
         // 假设游戏时间为30秒
-        return (int) (((gameStartTime + 30000) - System.currentTimeMillis()) / 1000);
+        return Math.max(0, (int) (((gameStartTime + 30000) - System.currentTimeMillis()) / 1000));
     }
 
 }
