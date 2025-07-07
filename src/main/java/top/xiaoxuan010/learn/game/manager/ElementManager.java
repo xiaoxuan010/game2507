@@ -48,4 +48,15 @@ public class ElementManager {
         }
 
     }
+
+    public void clear() {
+        gameElements.values().forEach(List::clear);
+    }
+
+    public void clearType(GameElementType type) {
+        List<GameElement> elements = gameElements.get(type);
+        if (elements != null) {
+            elements.clear();
+        }
+    }
 }

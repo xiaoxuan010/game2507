@@ -1,5 +1,7 @@
 package top.xiaoxuan010.learn.game.manager;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import javax.swing.ImageIcon;
 
@@ -21,7 +24,7 @@ import top.xiaoxuan010.learn.game.element.CountdownBg;
 import top.xiaoxuan010.learn.game.element.Fish;
 import top.xiaoxuan010.learn.game.element.GameBackground;
 import top.xiaoxuan010.learn.game.element.components.Digit;
-import top.xiaoxuan010.learn.game.element.utils.GameStateManager;
+import top.xiaoxuan010.learn.game.element.utils.GameStateDataManager;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
 @Slf4j
@@ -31,22 +34,96 @@ public class GameLoader {
     // 图片资源映射
     public static Map<String, ImageIcon> imgMap = new HashMap<>();
 
+    // 字体缓存
+    public static Map<String, Font> fontMap = new HashMap<>();
+
     // 线程池大小可以根据实际情况调整
     private static final int THREAD_POOL_SIZE = 8;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
-    public static void loadImages() {
+    /**
+     * Preload essential resources (resources required for the menu)
+     */
+    public static void preloadEssentialResources() {
+        log.info("Start preloading essential resources...");
+        long startTime = System.currentTimeMillis();
+
+        try {
+            // Load menu background images
+            loadEssentialImages();
+
+            // Load fonts
+            loadFonts();
+
+            long endTime = System.currentTimeMillis();
+            log.info("Essential resources preloaded, cost {} ms", (endTime - startTime));
+
+        } catch (Exception e) {
+            log.error("Failed to preload essential resources", e);
+            throw new RuntimeException("Failed to load essential resources", e);
+        }
+    }
+
+    /**
+     * Load essential image resources
+     */
+    private static void loadEssentialImages() {
+        try {
+            // Load menu background
+            imgMap.put("background.menu", new ImageIcon(ImageResourceLoader.load("images/maps/start.jpg")));
+            log.debug("Menu background image loaded");
+
+        } catch (IOException e) {
+            log.error("Failed to load essential image resources", e);
+            throw new RuntimeException("Failed to load essential image resources", e);
+        }
+    }
+
+    /**
+     * Load font resources
+     */
+    private static void loadFonts() {
+        try {
+            // Load font files from resources/font directory
+            InputStream fontStream = GameLoader.class.getClassLoader()
+                    .getResourceAsStream("font/hk4e_zh-cn.ttf");
+
+            if (fontStream != null) {
+                Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+                fontMap.put("default", customFont);
+                log.debug("Custom font loaded");
+                fontStream.close();
+            } else {
+                // If font file is not found, use system default font
+                Font defaultFont = new Font("微软雅黑", Font.PLAIN, 12);
+                fontMap.put("default", defaultFont);
+                log.warn("Custom font file not found, using system default font");
+            }
+
+        } catch (IOException | FontFormatException e) {
+            // If font loading fails, use system default font
+            Font defaultFont = new Font("微软雅黑", Font.PLAIN, 12);
+            fontMap.put("default", defaultFont);
+            log.warn("Font loading failed, using system default font", e);
+        }
+    }
+
+    public static void loadImages(Consumer<Integer> progressCallback) {
         long startTime = System.currentTimeMillis();
         log.trace("Start loading image resources...");
         try (InputStream inputStream = GameLoader.class.getClassLoader()
                 .getResourceAsStream("images/images.properties")) {
             if (inputStream == null) {
-                throw new IOException("无法找到 images.properties 文件");
+                throw new IOException("Cannot find images.properties file");
             }
             Properties properties = new Properties();
             properties.load(inputStream);
 
-            // 使用 CompletableFuture 收集所有加载任务
+            // Get total number of images for progress calculation
+            int totalImages = properties.size();
+            java.util.concurrent.atomic.AtomicInteger loadedImages = new java.util.concurrent.atomic.AtomicInteger(0);
+
+            // Use CompletableFuture to collect all loading tasks
             CompletableFuture<?>[] futures = properties.stringPropertyNames().stream()
                     .map(key -> CompletableFuture.runAsync(() -> {
                         String value = properties.getProperty(key);
@@ -60,12 +137,18 @@ public class GameLoader {
                                 log.debug("Loaded image: key={}, path={}", key, imagePath);
                             } catch (IOException e) {
                                 log.error("Failed to load image: key={}, path={}", key, imagePath, e);
+                            } finally {
+                                // Update progress after loading
+                                synchronized (GameLoader.class) {
+                                    int progress = (int) ((double) loadedImages.incrementAndGet() / totalImages * 100);
+                                    progressCallback.accept(progress);
+                                }
                             }
                         }
                     }, executorService))
                     .toArray(CompletableFuture[]::new);
 
-            // 等待所有任务完成
+            // Wait for all tasks to complete
             CompletableFuture.allOf(futures).join();
 
             long endTime = System.currentTimeMillis();
@@ -75,7 +158,7 @@ public class GameLoader {
             System.err.println(e.getMessage());
             e.printStackTrace();
         } finally {
-            // 关闭线程池
+            // Close thread pool
             executorService.shutdown();
         }
     }
@@ -92,28 +175,28 @@ public class GameLoader {
     }
 
     public static void loadEnemies() {
-        // 初始化鱼类管理器并生成初始鱼群
+        // Initialize fish manager and generate initial fish group
         FishManager fishManager = FishManager.getInstance();
         fishManager.spawnInitialFishes();
-        // 创建一些1级鱼
+        // Create some level 1 fish
         for (int i = 0; i < 3; i++) {
             Fish fish = new Fish(100 + i * 120, 100, 80, 60, 1);
             ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
         }
 
-        // 创建一些2级鱼 (fish.lv2系列)
+        // Create some level 2 fish (fish.lv2 series)
         for (int i = 0; i < 4; i++) {
             Fish fish = new Fish(150 + i * 120, 200, 100, 80, 2);
             ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
         }
 
-        // 创建更多不同位置的2级鱼
+        // Create more level 2 fish at different positions
         for (int i = 0; i < 3; i++) {
             Fish fish = new Fish(80 + i * 150, 350, 100, 80, 2);
             ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
         }
 
-        // 创建一些移动的2级鱼
+        // Create some moving level 2 fish
         for (int i = 0; i < 2; i++) {
             Fish fish = new Fish(50 + i * 200, 450, 100, 80, 2);
             ELEMENT_MANAGER.addElement(fish, GameElementType.ENEMY);
@@ -121,7 +204,7 @@ public class GameLoader {
     }
 
     public static void loadUI() {
-        GameStateManager gameStateManager = GameStateManager.getInstance();
+        GameStateDataManager gameStateManager = GameStateDataManager.getInstance();
         gameStateManager.reset();
 
         CannonUpgradeBtn cannonUpgradeBtn = new CannonUpgradeBtn();
@@ -129,34 +212,36 @@ public class GameLoader {
         CannonDowngradeBtn cannonDowngradeBtn = new CannonDowngradeBtn();
         ELEMENT_MANAGER.addElement(cannonDowngradeBtn, GameElementType.UI);
         
-        // 添加倒计时显示
+        // Add countdown display
         CountdownBg countdownBg = new CountdownBg();
         ELEMENT_MANAGER.addElement(countdownBg, GameElementType.UI);
         
-        // 添加金币显示
+        // Add coins display
         CoinsBg coinsBg = new CoinsBg();
         ELEMENT_MANAGER.addElement(coinsBg, GameElementType.UI);
 
         CannonBg cannonBg = new CannonBg();
         ELEMENT_MANAGER.addElement(cannonBg, GameElementType.MAP);
 
-        // 加载金币背景和数字显示
+        // Load coins background and digit display
         CoinsBg coinsBackground = new CoinsBg();
         ELEMENT_MANAGER.addElement(coinsBackground, GameElementType.MAP);
-        Digit digit1 = new Digit(590, 435, () -> (GameStateManager.getInstance().getCoins() / 100) % 10); // 百位
+        Digit digit1 = new Digit(590, 435, () -> (GameStateDataManager.getInstance().getCoins() / 100) % 10); // Hundreds
+                                                                                                              // place
         ELEMENT_MANAGER.addElement(digit1, GameElementType.UI);
-        Digit digit2 = new Digit(605, 435, () -> (GameStateManager.getInstance().getCoins() / 10) % 10); // 十位
+        Digit digit2 = new Digit(605, 435, () -> (GameStateDataManager.getInstance().getCoins() / 10) % 10); // Tens
+                                                                                                             // place
         ELEMENT_MANAGER.addElement(digit2, GameElementType.UI);
-        Digit digit3 = new Digit(620, 435, () -> GameStateManager.getInstance().getCoins() % 10); // 个位
+        Digit digit3 = new Digit(620, 435, () -> GameStateDataManager.getInstance().getCoins() % 10); // Units place
         ELEMENT_MANAGER.addElement(digit3, GameElementType.UI);
 
-        // 加载时间背景和数字显示
+        // Load time background and digit display
         ELEMENT_MANAGER.addElement(countdownBg, GameElementType.MAP);
         Digit timeDigit1 = new Digit(165, 435,
-                () -> (GameStateManager.getInstance().getGameCountdown() / 10));
+                () -> (GameStateDataManager.getInstance().getGameCountdown() / 10));
         ELEMENT_MANAGER.addElement(timeDigit1, GameElementType.UI);
         Digit timeDigit2 = new Digit(180, 435,
-                () -> (GameStateManager.getInstance().getGameCountdown() % 10));
+                () -> (GameStateDataManager.getInstance().getGameCountdown() % 10));
         ELEMENT_MANAGER.addElement(timeDigit2, GameElementType.UI);
 
     }

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 @Setter
 @Slf4j
@@ -40,6 +41,16 @@ public class GameFrame extends JFrame {
     }
 
     public void start() {
+        // 预加载必要资源
+        try {
+            GameLoader.preloadEssentialResources();
+            log.info("Essential resources preloaded, ready to show game window");
+        } catch (Exception e) {
+            log.error("Failed to preload essential resources", e);
+            System.exit(1);
+            return;
+        }
+
         if (gamePanel != null) {
             this.add(gamePanel);
         }

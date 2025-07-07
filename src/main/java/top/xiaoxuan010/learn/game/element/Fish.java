@@ -1,12 +1,12 @@
 package top.xiaoxuan010.learn.game.element;
 
-import top.xiaoxuan010.learn.game.element.components.GameElement;
-import top.xiaoxuan010.learn.game.manager.GameLoader;
-
-import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
+
+import javax.swing.ImageIcon;
+
+import top.xiaoxuan010.learn.game.element.components.GameElement;
+import top.xiaoxuan010.learn.game.manager.GameLoader;
 
 public class Fish extends GameElement {
     private int level;

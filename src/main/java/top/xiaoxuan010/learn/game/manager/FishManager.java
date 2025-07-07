@@ -1,9 +1,10 @@
 package top.xiaoxuan010.learn.game.manager;
 
-import top.xiaoxuan010.learn.game.element.Fish;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import top.xiaoxuan010.learn.game.element.Fish;
 
 /**
  * 鱼类管理器
@@ -12,8 +13,6 @@ import java.util.Random;
 public class FishManager {
     private static FishManager instance;
     private List<Fish> activeFishes;
-    private long gameStartTime;
-    private long lastSpawnTime;
     private long lastBatchSpawnTime;
     private Random random;
     private ElementManager elementManager;
@@ -36,8 +35,6 @@ public class FishManager {
         this.activeFishes = new ArrayList<>();
         this.random = new Random();
         this.elementManager = ElementManager.getInstance();
-        this.gameStartTime = System.currentTimeMillis();
-        this.lastSpawnTime = 0;
         this.lastBatchSpawnTime = 0;
     }
     
@@ -176,8 +173,6 @@ public class FishManager {
     public void reset() {
         activeFishes.clear();
         elementManager.getElementsByType(GameElementType.FISH).clear();
-        gameStartTime = System.currentTimeMillis();
-        lastSpawnTime = 0;
         lastBatchSpawnTime = 0;
     }
     

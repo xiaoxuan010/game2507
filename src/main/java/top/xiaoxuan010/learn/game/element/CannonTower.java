@@ -75,7 +75,7 @@ public class CannonTower extends RotatableElement {
 
         // 创建涟漪
         Ripple ripple = new Ripple(x, y);
-        elementManager.addElement(ripple, GameElementType.MAP);
+        elementManager.addElement(ripple, GameElementType.UI);
 
         log.debug("Fire bullet from ({}, {}) to ({}, {}) with speed {}", muzzleX, muzzleY, x, y, speed);
     }
