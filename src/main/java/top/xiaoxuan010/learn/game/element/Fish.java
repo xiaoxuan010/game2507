@@ -236,18 +236,70 @@ public class Fish extends GameElement {
 
     /**
      * 获取捕获此鱼的金币奖励
+     * 现在从FishInfo.plist配置文件中读取鱼的worth值
      * 
      * @return 金币数量
      */
     public int getCoinReward() {
-        // 根据鱼的等级返回不同的金币奖励
-        if (level <= 4) {
-            return level * 2; // 1-4级鱼：2, 4, 6, 8金币
-        } else if (level <= 8) {
-            return level * 3; // 5-8级鱼：15, 18, 21, 24金币
-        } else {
-            return level * 5; // 9-16级鱼：45, 50, 55, 60, 65, 70, 75, 80金币
+        // 从配置中获取鱼的基础分值（worth）
+        int baseWorth = getFishWorthFromConfig();
+        
+        // 根据渔网等级添加少量奖励
+        top.xiaoxuan010.learn.game.manager.PlayerEquipmentManager equipmentManager = 
+            top.xiaoxuan010.learn.game.manager.PlayerEquipmentManager.getInstance();
+        int netLevelBonus = Math.max(1, equipmentManager.getCurrentNetLevel() / 3); // 渔网等级奖励
+        
+        return baseWorth + netLevelBonus;
+    }
+    
+    /**
+     * 从FishInfo.plist配置文件中获取鱼的分值
+     * 
+     * @return 鱼的基础分值
+     */
+    private int getFishWorthFromConfig() {
+        // 根据鱼类型返回对应的分值（参考FishInfo.plist中的worth值）
+        switch (fishType) {
+            case "fish01": return 5;   // 小光鱼
+            case "fish02": return 8;   // 小黄鱼  
+            case "fish03": return 12;  // 扁鱼
+            case "fish04": return 18;  // 神仙鱼
+            case "fish05": return 25;  // 小丑鱼
+            case "fish06": return 30;  // 绿色河豚
+            case "fish07": return 40;  // 小鳊鱼
+            case "fish08": return 60;  // 黑鲈鱼
+            case "fish09": return 80;  // 红杉鱼
+            case "fish10": return 120; // 海龟
+            case "fish11": return 180; // 灯笼鱼1
+            case "fish12": return 200; // 灯笼鱼2
+            case "fish13": return 250; // 海马
+            case "fish14": return 300; // 蝠鲼
+            case "fish15": return 400; // 鲨鱼
+            case "fish16": return 500; // 座头鲸
+            default: 
+                return level * 5; // 默认分值
         }
+    }
+    
+    /**
+     * 创建金币动画显示
+     * 
+     * @param coinValue 金币数量
+     */
+    private void createCoinAnimation(int coinValue) {
+        // 在鱼的位置创建金币动画
+        float animationX = getX() + getWidth() / 2.0f;
+        float animationY = getY() + getHeight() / 2.0f;
+        
+        CoinAnimation coinAnimation = new CoinAnimation(animationX, animationY, coinValue);
+        
+        // 添加到游戏元素管理器中
+        top.xiaoxuan010.learn.game.manager.ElementManager elementManager = 
+            top.xiaoxuan010.learn.game.manager.ElementManager.getInstance();
+        elementManager.addElement(coinAnimation, 
+            top.xiaoxuan010.learn.game.manager.GameElementType.UI);
+        
+        System.out.println("创建金币动画 - 位置: (" + animationX + ", " + animationY + "), 金币: " + coinValue);
     }
 
     public String getFishType() {
@@ -337,19 +389,20 @@ public class Fish extends GameElement {
                 System.out.println("捕获失败！鱼等级: " + level + ", 成功率: " + successRate + "% - 鱼逃脱了");
                 return; // 捕获失败，鱼逃脱
             }
-            
-            // 成功捕获
+              // 成功捕获
             setCaught();
 
             // 根据渔网等级和鱼的等级计算金币奖励
-            int baseCoinReward = getCoinReward();
-            int netLevelBonus = Math.max(1, fishNet.getNetLevel() / 2); // 渔网等级奖励
-            int totalReward = baseCoinReward + netLevelBonus;
+            int totalReward = getCoinReward();
             
+            // 添加金币到游戏状态
             GameStateDataManager.getInstance().addCoins(totalReward);
-
+            
+            // 创建金币动画显示
+            createCoinAnimation(totalReward);
+            
             System.out.println("成功捕获！鱼: " + fishType + " (等级" + level + "), 渔网等级: " + fishNet.getNetLevel() + 
-                             ", 成功率: " + successRate + "%, 获得金币: " + totalReward + " (基础:" + baseCoinReward + " + 渔网奖励:" + netLevelBonus + ")");
+                             ", 成功率: " + successRate + "%, 获得金币: " + totalReward);
         }
     }
 
