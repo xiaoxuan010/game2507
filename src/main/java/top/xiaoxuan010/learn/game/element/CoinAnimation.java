@@ -182,7 +182,7 @@ public class CoinAnimation extends GameElement {
             setIcon(goldAnimation.getCurrentFrame());
         }
         
-        // 计算动画进度 (0.0 到 1.0)
+        // 计算动画进度 
         float progress = (float) elapsed / duration;
         
         // 缓动函数：快速开始，慢慢结束
@@ -211,7 +211,7 @@ public class CoinAnimation extends GameElement {
         // 设置透明度
         g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, alpha));
         
-        // 绘制金币图标（如果存在）
+        // 绘制金币图标
         if (getIcon() != null) {
             g2d.drawImage(getIcon().getImage(), getX(), getY(), getWidth(), getHeight(), null);
         }
