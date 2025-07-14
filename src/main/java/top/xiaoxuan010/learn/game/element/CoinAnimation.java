@@ -57,17 +57,20 @@ public class CoinAnimation extends GameElement {
      * 根据金币数量确定动画类型
      */
     private void determineAnimationType() {
-        if (coinValue >= 100) {
-            animationType = AnimationType.HUNDRED_BONUS;  // 显示"100"图标（100+分）
-            duration = 3000; // 高分奖励显示更久
+        if (coinValue >= 150) {
+            animationType = AnimationType.HUNDRED_BONUS;  // 150+分
+            duration = 3000;
+        } else if (coinValue >= 100) {
+            animationType = AnimationType.HUNDRED_BONUS;  // 100+分
+            duration = 3000;
         } else if (coinValue >= 40) {
-            animationType = AnimationType.GOLD_LARGE;     // 显示"40"图标（40+分）
+            animationType = AnimationType.GOLD_LARGE;     // 40+分
             duration = 2500;
         } else if (coinValue >= 15) {
-            animationType = AnimationType.GOLD_MEDIUM;    // 显示金币图标（15+分）
+            animationType = AnimationType.GOLD_MEDIUM;    // 15+分
             duration = 2000;
         } else {
-            animationType = AnimationType.GOLD_SMALL;     // 显示小金币图标（1-14分）
+            animationType = AnimationType.GOLD_SMALL;     // 1-14分
             duration = 1500;
         }
     }
@@ -77,19 +80,27 @@ public class CoinAnimation extends GameElement {
      */
     private void loadAnimation() {
         try {
-            switch (animationType) {
-                case GOLD_SMALL:
-                    goldAnimation = FrameAnimationLoader.load("goldItem", 3, true);
-                    break;
-                case GOLD_MEDIUM:
-                    goldAnimation = FrameAnimationLoader.load("goldItem", 3, true);
-                    break;
-                case GOLD_LARGE:
-                    goldAnimation = FrameAnimationLoader.load("highPoint", 4, true);
-                    break;
-                case HUNDRED_BONUS:
-                    goldAnimation = FrameAnimationLoader.load("hundred", 5, true);
-                    break;
+            String animationKey = getAnimationKey();
+            
+            // 根据确切分值加载对应动画
+            if (animationKey != null) {
+                goldAnimation = FrameAnimationLoader.load(animationKey, 4, true);
+            }
+            
+            // 如果没有找到确切分值的动画，使用通用动画
+            if (goldAnimation == null || goldAnimation.getFrames().isEmpty()) {
+                switch (animationType) {
+                    case GOLD_SMALL:
+                    case GOLD_MEDIUM:
+                        goldAnimation = FrameAnimationLoader.load("goldItem", 3, true);
+                        break;
+                    case GOLD_LARGE:
+                        goldAnimation = FrameAnimationLoader.load("point40", 4, true);
+                        break;
+                    case HUNDRED_BONUS:
+                        goldAnimation = FrameAnimationLoader.load("point100", 5, true);
+                        break;
+                }
             }
             
             if (goldAnimation != null && !goldAnimation.getFrames().isEmpty()) {
@@ -106,6 +117,24 @@ public class CoinAnimation extends GameElement {
             e.printStackTrace();
             // fallback：使用默认图标
             useFallbackIcon();
+        }
+    }
+    
+    /**
+     * 根据确切的金币数量获取动画键名
+     */
+    private String getAnimationKey() {
+        switch (coinValue) {
+            case 40: return "point40";
+            case 50: return "point50";
+            case 60: return "point60";
+            case 70: return "point70";
+            case 80: return "point80";
+            case 90: return "point90";
+            case 100: return "point100";
+            case 120: return "point120";
+            case 150: return "point150";
+            default: return null; // 使用通用动画
         }
     }
     
