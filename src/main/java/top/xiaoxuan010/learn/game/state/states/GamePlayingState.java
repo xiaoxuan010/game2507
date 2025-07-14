@@ -45,9 +45,16 @@ public class GamePlayingState extends BaseGameState {
 
     private void loadGameContent() {
         elementManager.clear();
+        
+        // 重置鱼类管理器
+        fishManager.reset();
+        
         this.loadBackground(2);
         this.loadPlayer();
         this.loadUI();
+        
+        // 立即生成初始鱼群
+        fishManager.spawnInitialFishes();
     }
 
     private void loadBackground(int mapId) {
@@ -59,6 +66,9 @@ public class GamePlayingState extends BaseGameState {
         CannonTower cannonTower = new CannonTower();
         cannonTower.setLevel(1);
         elementManager.addElement(cannonTower, GameElementType.PLAYER);
+        
+        // 重置渔网等级，确保与大炮等级同步
+        top.xiaoxuan010.learn.game.manager.PlayerEquipmentManager.getInstance().reset();
     }
 
     public void loadUI() {

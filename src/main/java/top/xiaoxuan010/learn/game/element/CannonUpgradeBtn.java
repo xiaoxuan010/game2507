@@ -27,8 +27,15 @@ public class CannonUpgradeBtn extends ImageButton {
             if (cannonTower instanceof CannonTower) {
                 CannonTower cannonElement = (CannonTower) cannonTower;
                 if (cannonElement.getLevel() < CannonTower.MAX_LEVEL) {
+                    // 升级大炮等级
                     cannonElement.setLevel(cannonElement.getLevel() + 1);
-                    log.debug("Cannon upgraded to level {}", cannonElement.getLevel());
+                    
+                    // 同时同步升级渔网等级
+                    top.xiaoxuan010.learn.game.manager.PlayerEquipmentManager equipmentManager = 
+                        top.xiaoxuan010.learn.game.manager.PlayerEquipmentManager.getInstance();
+                    equipmentManager.setCurrentNetLevel(cannonElement.getLevel());
+                    
+                    log.debug("Cannon and Net upgraded to level {}", cannonElement.getLevel());
                 } else {
                     log.debug("Cannon is already at maximum level.");
                 }

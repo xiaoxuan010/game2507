@@ -80,7 +80,11 @@ public class Bullet extends RotatableElement {
     }
 
     private void onArrive() {
-        FishNet fishNet = new FishNet(centerX, centerY, getBulletLevel(), getDirection());
+        // 使用玩家当前的渔网等级，而不是子弹等级
+        int currentNetLevel = top.xiaoxuan010.learn.game.manager.PlayerEquipmentManager.getInstance().getCurrentNetLevel();
+        FishNet fishNet = new FishNet(centerX, centerY, currentNetLevel, getDirection());
         elementManager.addElement(fishNet, GameElementType.BULLET);
+        
+        System.out.println("发射渔网 - 等级: " + currentNetLevel + " 在位置 (" + centerX + ", " + centerY + ")");
     }
 }
