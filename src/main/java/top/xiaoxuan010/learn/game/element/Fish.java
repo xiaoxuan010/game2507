@@ -222,7 +222,7 @@ public class Fish extends GameElement {
         }
     }
 
-    // 如果需要切换翻转逻辑，可以修改这个方法
+    // 切换翻转逻辑
     private boolean shouldFlipImage() {
         // 原始图片朝左，向右游动时翻转
         return movingRight;
@@ -259,22 +259,22 @@ public class Fish extends GameElement {
     private int getFishWorthFromConfig() {
         // 根据鱼类型返回对应的分值（参考FishInfo.plist中的worth值）
         switch (fishType) {
-            case "fish01": return 5;   // 小光鱼
-            case "fish02": return 8;   // 小黄鱼  
-            case "fish03": return 12;  // 扁鱼
-            case "fish04": return 18;  // 神仙鱼
-            case "fish05": return 25;  // 小丑鱼
-            case "fish06": return 30;  // 绿色河豚
-            case "fish07": return 40;  // 小鳊鱼
-            case "fish08": return 60;  // 黑鲈鱼
-            case "fish09": return 80;  // 红杉鱼
-            case "fish10": return 120; // 海龟
-            case "fish11": return 180; // 灯笼鱼1
-            case "fish12": return 200; // 灯笼鱼2
-            case "fish13": return 250; // 海马
-            case "fish14": return 300; // 蝠鲼
-            case "fish15": return 400; // 鲨鱼
-            case "fish16": return 500; // 座头鲸
+            case "fish01": return 5;   
+            case "fish02": return 8;   
+            case "fish03": return 12;  
+            case "fish04": return 18;
+            case "fish05": return 25;  
+            case "fish06": return 30;  
+            case "fish07": return 40;  
+            case "fish08": return 60;  
+            case "fish09": return 80; 
+            case "fish10": return 120; 
+            case "fish11": return 180; 
+            case "fish12": return 200; 
+            case "fish13": return 250; 
+            case "fish14": return 300; 
+            case "fish15": return 400; 
+            case "fish16": return 500; 
             default: 
                 return level * 5; // 默认分值
         }
@@ -411,47 +411,46 @@ public class Fish extends GameElement {
      */
     private void initializeMovementType() {
         if (fishType.equals("fish01") || fishType.equals("fish02") || fishType.equals("fish03")) {
-            // 第1组：小光鱼、小黄鱼 - 成群结队，快速灵活，轻快摆尾
+            // 第1组
             movementType = "straight";
             speedX *= 1.1f; // 小鱼游得稍快
         } else if (fishType.equals("fish04") || fishType.equals("fish05") || fishType.equals("fish06")) {
-            // 第2组：神仙鱼、河豚鱼、小丑鱼 - 优雅波浪游动，悠闲自得
+            // 第2组
             movementType = "wave";
-            waveAmplitude = 20 + (float) (Math.random() * 15); // 20-35像素优雅摆动
-            waveFrequency = 0.03f + (float) (Math.random() * 0.02f); // 悠闲频率
-            speedX *= 0.95f; // 稍慢的优雅游动
+            waveAmplitude = 20 + (float) (Math.random() * 15); 
+            waveFrequency = 0.03f + (float) (Math.random() * 0.02f); 
+            speedX *= 0.95f; // 稍慢
         } else if (fishType.equals("fish07") || fishType.equals("fish08") || fishType.equals("fish09")) {
-            // 第3组：小鳊鱼、红杉鱼 - 敏捷Z字形游动，灵活难捕
+            // 第3组
             movementType = "zigzag";
             zigzagCounter = 0;
             zigzagDirection = 1;
             speedX *= 1.15f; // 敏捷快速
         } else if (fishType.equals("fish10") || fishType.equals("fish11") || fishType.equals("fish12")) {
-            // 第4组：海龟、灯笼鱼 - 稳重的弧形游动，体型较大
+            // 第4组
             movementType = "circle";
-            circleRadius = 25 + (float) (Math.random() * 20); // 25-45像素弧度
+            circleRadius = 25 + (float) (Math.random() * 20); 
             circleAngle = 0;
             speedX *= 0.85f; // 稳重缓慢
         } else if (fishType.equals("fish13") || fishType.equals("fish14")) {
-            // 第5组：魔鬼鱼 - 滑翔式冲刺，偶尔加速
+            // 第5组
             movementType = "dash";
             speedX *= 1.3f; // 冲刺速度
         } else {
-            // 第6组：鲨鱼 - 威猛的缓慢摆动，霸主级别
+            // 第6组
             movementType = "slow_sway";
             speedX *= 1.2f; // 威猛但不过快
-            waveAmplitude = 25; // 威猛的摆动幅度
-            waveFrequency = 0.025f; // 威猛的频率
+            waveAmplitude = 25; 
+            waveFrequency = 0.025f; 
         }
     }
 
     /**
-     * 直线游动 - 小鱼的灵活游动，带有轻微摆尾效果
+     * 直线游动 - 小鱼，带有轻微摆尾效果
      */
     private void updateStraightMovement() {
         currentX += speedX;
         
-        // 捕鱼达人风格的轻微摆尾效果
         long currentTime = System.currentTimeMillis();
         float timeDiff = (currentTime - movementStartTime) * 0.001f;
         float tailSway = 3f * (float) Math.sin(timeDiff * 4.0f); // 轻微的摆尾
@@ -466,7 +465,7 @@ public class Fish extends GameElement {
     }
 
     /**
-     * 波浪游动 - 神仙鱼等的优雅波浪游动
+     * 波浪游动
      */
     private void updateWaveMovement() {
         long currentTime = System.currentTimeMillis();
@@ -474,11 +473,9 @@ public class Fish extends GameElement {
 
         currentX += speedX;
         
-        // 优雅的波浪游动，加上基础垂直移动
         float waveY = waveAmplitude * (float) Math.sin(timeDiff * waveFrequency * 2 * Math.PI);
         currentY += originalSpeedY + waveY * 0.02f; // 降低波浪影响，使其更平滑
         
-        // 河豚鱼的特殊效果：周期性的速度变化（鼓肚子效果）
         if (fishType.equals("fish05")) {
             float puffEffect = 0.9f + 0.2f * (float) Math.sin(timeDiff * 0.8f);
             currentX += speedX * (puffEffect - 1) * 0.1f; // 轻微的节奏变化
@@ -518,13 +515,12 @@ public class Fish extends GameElement {
         currentX += speedX;
         
         // 稳重的弧形游动，不是完整的圆圈
-        circleAngle += 0.03f + (float)(Math.random() * 0.02f); // 0.03-0.05弧度/帧
+        circleAngle += 0.03f + (float)(Math.random() * 0.02f); 
         
         // 创造大弧度的游动路径，而不是小圆圈
         float arcY = circleRadius * (float) Math.sin(circleAngle) * 0.3f;
         currentY += speedY + arcY * 0.02f; // 很轻微的弧形影响
         
-        // 海龟的特殊效果：偶尔的"呼吸"暂停
         if (fishType.equals("fish10") && Math.random() < 0.003f) {
             speedX *= 0.8f; // 短暂减速
             if (Math.abs(speedX) < Math.abs(originalSpeedX) * 0.7f) {
@@ -534,7 +530,7 @@ public class Fish extends GameElement {
     }
 
     /**
-     * 冲刺游动 - 魔鬼鱼的滑翔冲刺
+     * 冲刺游动 - 滑翔冲刺
      */
     private void updateDashMovement() {
         currentX += speedX;
@@ -562,7 +558,7 @@ public class Fish extends GameElement {
     }
 
     /**
-     * 威猛摆动 - 鲨鱼的霸主级游动
+     * 威猛摆动
      */
     private void updateSlowSwayMovement() {
         long currentTime = System.currentTimeMillis();
@@ -582,7 +578,7 @@ public class Fish extends GameElement {
         
         // 鲨鱼的威猛感：速度有轻微波动
         if (Math.random() < 0.002f) {
-            speedX *= (0.95f + (float)(Math.random() * 0.1f)); // 0.95-1.05倍速度变化
+            speedX *= (0.95f + (float)(Math.random() * 0.1f)); 
         }
     }
 }
