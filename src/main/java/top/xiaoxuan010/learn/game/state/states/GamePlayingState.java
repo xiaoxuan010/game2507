@@ -17,6 +17,8 @@ import top.xiaoxuan010.learn.game.element.components.GameElement;
 import top.xiaoxuan010.learn.game.manager.ElementManager;
 import top.xiaoxuan010.learn.game.manager.FishManager;
 import top.xiaoxuan010.learn.game.manager.GameElementType;
+import top.xiaoxuan010.learn.game.manager.GameLevelConfig;
+import top.xiaoxuan010.learn.game.manager.GameLoader;
 import top.xiaoxuan010.learn.game.manager.utils.GameStateDataManager;
 import top.xiaoxuan010.learn.game.state.GameState;
 import top.xiaoxuan010.learn.game.state.GameStateManager;
@@ -26,6 +28,7 @@ public class GamePlayingState extends BaseGameState {
     private final ElementManager elementManager = ElementManager.getInstance();
     private final FishManager fishManager = FishManager.getInstance();
     private final GameStateDataManager gameStateDataManager = GameStateDataManager.getInstance();
+    private GameLevelConfig currentLevelConfig;
 
     public GamePlayingState(GameStateManager stateManager) {
         super(stateManager);
@@ -34,6 +37,7 @@ public class GamePlayingState extends BaseGameState {
     @Override
     public void enter() {
         log.info("Entering game playing state");
+        loadCurrentLevelConfig();
         loadGameContent();
     }
 
@@ -43,22 +47,53 @@ public class GamePlayingState extends BaseGameState {
         cleanupGameContent();
     }
 
+    private void loadCurrentLevelConfig() {
+        int selectedLevel = stateManager.getSelectedLevel();
+        currentLevelConfig = GameLoader.getLevelConfig(selectedLevel);
+
+        if (currentLevelConfig == null) {
+            log.warn("No configuration found for level {}, using default level 1", selectedLevel);
+            currentLevelConfig = GameLoader.getLevelConfig(1);
+        }
+
+        if (currentLevelConfig != null) {
+            log.info("Loaded configuration for level {}: background={}, time={}, shoal={}",
+                    currentLevelConfig.part, currentLevelConfig.background,
+                    currentLevelConfig.time, currentLevelConfig.shoalSumInScreen);
+        } else {
+            log.error("Failed to load any level configuration");
+        }
+    }
+
     private void loadGameContent() {
         elementManager.clear();
         
         // 重置鱼类管理器
         fishManager.reset();
         
-        this.loadBackground(2);
+        // 根据关卡配置加载背景
+        this.loadBackground();
         this.loadPlayer();
         this.loadUI();
         
+        // 根据关卡配置设置鱼类生成
+        if (currentLevelConfig != null) {
+            fishManager.setLevelConfig(currentLevelConfig);
+        }
+
         // 立即生成初始鱼群
         fishManager.spawnInitialFishes();
     }
 
-    private void loadBackground(int mapId) {
-        GameBackground gameBackground = new GameBackground(2);
+    private void loadBackground() {
+        int mapId = 0; // 默认背景
+
+        if (currentLevelConfig != null && currentLevelConfig.background != null) {
+            mapId = currentLevelConfig.background;
+            log.info("Loading background with mapId: {} for file: {}", mapId);
+        }
+
+        GameBackground gameBackground = new GameBackground(mapId);
         elementManager.addElement(gameBackground, GameElementType.MAP);
     }
 
@@ -74,6 +109,11 @@ public class GamePlayingState extends BaseGameState {
     public void loadUI() {
         GameStateDataManager gameStateManager = GameStateDataManager.getInstance();
         gameStateManager.reset();
+
+        // 根据关卡配置设置游戏时间
+        if (currentLevelConfig != null) {
+            gameStateManager.setGameDuration(currentLevelConfig.time);
+        }
 
         CannonUpgradeBtn cannonUpgradeBtn = new CannonUpgradeBtn();
         elementManager.addElement(cannonUpgradeBtn, GameElementType.UI);
@@ -98,13 +138,15 @@ public class GamePlayingState extends BaseGameState {
         elementManager.addElement(digit4, GameElementType.UI);
 
         elementManager.addElement(countdownBg, GameElementType.MAP);
-        Digit timeDigit1 = new Digit(165, 435,
-                () -> (GameStateDataManager.getInstance().getGameCountdown() / 10));
+        Digit timeDigit1 = new Digit(150, 435,
+                () -> (GameStateDataManager.getInstance().getGameCountdown() / 100));
         elementManager.addElement(timeDigit1, GameElementType.UI);
-        Digit timeDigit2 = new Digit(180, 435,
-                () -> (GameStateDataManager.getInstance().getGameCountdown() % 10));
+        Digit timeDigit2 = new Digit(165, 435,
+                () -> (GameStateDataManager.getInstance().getGameCountdown() / 10) % 10);
         elementManager.addElement(timeDigit2, GameElementType.UI);
-
+        Digit timeDigit3 = new Digit(180, 435,
+                () -> (GameStateDataManager.getInstance().getGameCountdown() % 10));
+        elementManager.addElement(timeDigit3, GameElementType.UI);
     }
 
     private void cleanupGameContent() {
@@ -196,5 +238,9 @@ public class GamePlayingState extends BaseGameState {
 
     public void endGame() {
         stateManager.setState(GameState.GAME_OVER);
+    }
+
+    public GameLevelConfig getCurrentLevelConfig() {
+        return currentLevelConfig;
     }
 }

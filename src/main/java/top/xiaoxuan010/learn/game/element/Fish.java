@@ -28,7 +28,6 @@ public class Fish extends GameElement {
 
     // 移动模式相关属性
     private String movementType;
-    @SuppressWarnings("unused")
     private float originalSpeedX;
     private float originalSpeedY;
     private long movementStartTime;

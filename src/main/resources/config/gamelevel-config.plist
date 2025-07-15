@@ -18,7 +18,7 @@
 		<key>bgMusic</key>
 		<string>bg.ogg</string>
 		<key>background</key>
-		<string>bg/fishlightbg_3.jpg</string>
+		<string>1</string>
 	</dict>
 	<dict>
 		<key>part</key>
@@ -36,7 +36,7 @@
 		<key>bgMusic</key>
 		<string>bg</string>
 		<key>background</key>
-		<string>bg/fishlightbg_1.jpg</string>
+		<string>2</string>
 	</dict>
 </array>
 </plist>

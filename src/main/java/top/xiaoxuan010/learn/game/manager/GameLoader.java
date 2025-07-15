@@ -14,6 +14,10 @@ import java.util.function.Consumer;
 
 import javax.swing.ImageIcon;
 
+import com.dd.plist.NSArray;
+import com.dd.plist.NSDictionary;
+import com.dd.plist.PropertyListParser;
+
 import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.manager.utils.ImageResourceLoader;
 
@@ -27,6 +31,9 @@ public class GameLoader {
 
     public static boolean isLoaded = false;
 
+    // 关卡配置列表
+    public static java.util.List<GameLevelConfig> gameLevelConfigs = new java.util.ArrayList<>();
+
     // 线程池大小可以根据实际情况调整
     private static final int THREAD_POOL_SIZE = 8;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -36,6 +43,7 @@ public class GameLoader {
         long startTime = System.currentTimeMillis();
 
         try {
+            loadGameLevelConfig();
             loadEssentialImages();
             loadFonts();
 
@@ -45,6 +53,34 @@ public class GameLoader {
         } catch (Exception e) {
             log.error("Failed to preload essential resources", e);
             throw new RuntimeException("Failed to load essential resources", e);
+        }
+    }
+
+    private static void loadGameLevelConfig() {
+        try (InputStream inputStream = GameLoader.class.getClassLoader()
+                .getResourceAsStream("config/gamelevel-config.plist")) {
+            if (inputStream == null) {
+                throw new IOException("Cannot find gamelevel-config.plist");
+            }
+            NSArray array = (NSArray) PropertyListParser.parse(inputStream);
+            gameLevelConfigs.clear();
+            for (int i = 0; i < array.count(); i++) {
+                NSDictionary dict = (NSDictionary) array.objectAtIndex(i);
+                GameLevelConfig config = new GameLevelConfig(
+                        dict.objectForKey("part").toJavaObject(Integer.class),
+                        dict.objectForKey("fish").toJavaObject(String.class),
+                        dict.objectForKey("showProbability").toJavaObject(String.class),
+                        dict.objectForKey("shoalSumInScreen").toJavaObject(Integer.class),
+                        dict.objectForKey("time").toJavaObject(Integer.class),
+                        dict.objectForKey("nextpart").toJavaObject(Integer.class),
+                        dict.objectForKey("bgMusic").toJavaObject(String.class),
+                        dict.objectForKey("background").toJavaObject(String.class));
+                gameLevelConfigs.add(config);
+            }
+            log.info("Game level config loaded, total {} levels", gameLevelConfigs.size());
+        } catch (Exception e) {
+            log.error("Failed to load gamelevel-config.plist", e);
+            throw new RuntimeException("Failed to load gamelevel-config.plist", e);
         }
     }
 
@@ -141,4 +177,25 @@ public class GameLoader {
         }
     }
 
+    /**
+     * 根据关卡编号获取关卡配置
+     * 
+     * @param level 关卡编号
+     * @return 关卡配置，如果找不到则返回null
+     */
+    public static GameLevelConfig getLevelConfig(int level) {
+        return gameLevelConfigs.stream()
+                .filter(config -> config.part == level)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * 获取所有关卡配置
+     * 
+     * @return 关卡配置列表
+     */
+    public static java.util.List<GameLevelConfig> getAllLevelConfigs() {
+        return new java.util.ArrayList<>(gameLevelConfigs);
+    }
 }

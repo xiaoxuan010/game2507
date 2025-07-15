@@ -1,6 +1,7 @@
 package top.xiaoxuan010.learn.game.manager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -9,44 +10,51 @@ import java.util.Random;
  * 根据gamelevel-config.plist配置文件中的信息管理鱼类生成
  */
 public class GameLevelConfig {
-    
-    // Part 1 配置信息
-    private static final String[] FISH_TYPES = {
-        "fish01", "fish02", "fish03", "fish04", "fish05", "fish06", "fish07", "fish08",
-        "fish09", "fish10", "fish11", "fish12", "fish13", "fish14", "fish15", "fish16"
-    };
-    
-    private static final int[] SHOW_PROBABILITIES = {
-        10, 10, 10, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
-    };
-    
-    private static final int SHOAL_SUM_IN_SCREEN = 30; // 屏幕上同时显示的鱼的总数
-    private static final int LEVEL_TIME = 300; // 关卡时间（秒）
-    
+    public int part;
+    public List<String> fishTypes;
+    public List<Integer> showProbabilities;
+    public int shoalSumInScreen;
+    public int time;
+    public int nextpart;
+    public String bgMusic;
+    public Integer background;
+
     private static final Random random = new Random();
+
+    public GameLevelConfig(int part, String fishStr, String probabilityStr,
+            int shoalSumInScreen, int time, int nextpart,
+            String bgMusic, String background) {
+        this.part = part;
+        this.fishTypes = Arrays.asList(fishStr.split(";"));
+        this.showProbabilities = Arrays.stream(probabilityStr.split(";"))
+                .map(Integer::parseInt)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        this.shoalSumInScreen = shoalSumInScreen;
+        this.time = time;
+        this.nextpart = nextpart;
+        this.bgMusic = bgMusic;
+        this.background = Integer.valueOf(background);
+    }
     
     /**
      * 根据配置生成鱼类信息
      * @return 鱼类信息列表，包含鱼的类型和位置
      */
-    public static List<FishSpawnInfo> generateFishSpawnInfo() {
+    public List<FishSpawnInfo> generateFishSpawnInfo() {
         List<FishSpawnInfo> fishList = new ArrayList<>();
         
         // 计算总概率
-        int totalProbability = 0;
-        for (int prob : SHOW_PROBABILITIES) {
-            totalProbability += prob;
-        }
+        int totalProbability = showProbabilities.stream().mapToInt(Integer::intValue).sum();
         
         // 根据配置生成指定数量的鱼
-        for (int i = 0; i < SHOAL_SUM_IN_SCREEN; i++) {
+        for (int i = 0; i < shoalSumInScreen; i++) {
             // 根据概率选择鱼的类型
             int randomValue = random.nextInt(totalProbability);
             int currentSum = 0;
             int selectedFishIndex = 0;
             
-            for (int j = 0; j < SHOW_PROBABILITIES.length; j++) {
-                currentSum += SHOW_PROBABILITIES[j];
+            for (int j = 0; j < showProbabilities.size(); j++) {
+                currentSum += showProbabilities.get(j);
                 if (randomValue < currentSum) {
                     selectedFishIndex = j;
                     break;
@@ -59,10 +67,11 @@ public class GameLevelConfig {
             
             // 根据鱼的类型设置大小
             int width, height;
-            if (selectedFishIndex < 4) { // fish01-fish04 小鱼
+            int fishNumber = Integer.parseInt(fishTypes.get(selectedFishIndex).replaceAll("\\D", ""));
+            if (fishNumber <= 4) { // fish01-fish04 小鱼
                 width = 60;
                 height = 40;
-            } else if (selectedFishIndex < 8) { // fish05-fish08 中等鱼
+            } else if (fishNumber <= 8) { // fish05-fish08 中等鱼
                 width = 80;
                 height = 60;
             } else { // fish09-fish16 大鱼
@@ -71,8 +80,8 @@ public class GameLevelConfig {
             }
             
             FishSpawnInfo fishInfo = new FishSpawnInfo(
-                FISH_TYPES[selectedFishIndex], 
-                selectedFishIndex + 1, // 级别从1开始
+                    fishTypes.get(selectedFishIndex),
+                    fishNumber,
                 x, y, width, height
             );
             
@@ -98,13 +107,5 @@ public class GameLevelConfig {
             this.width = width;
             this.height = height;
         }
-    }
-    
-    public static int getShoalSumInScreen() {
-        return SHOAL_SUM_IN_SCREEN;
-    }
-    
-    public static int getLevelTime() {
-        return LEVEL_TIME;
     }
 }

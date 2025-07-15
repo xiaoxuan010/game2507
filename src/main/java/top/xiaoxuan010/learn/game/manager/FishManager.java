@@ -8,7 +8,7 @@ import top.xiaoxuan010.learn.game.element.Fish;
 
 /**
  * 鱼类管理器
- * 负责根据gamelevel-config.plist第一部分配置生成和管理鱼类
+ * 负责根据GameLevelConfig配置生成和管理鱼类
  */
 public class FishManager {
     private static FishManager instance;
@@ -16,20 +16,11 @@ public class FishManager {
     private long lastBatchSpawnTime;
     private Random random;
     private ElementManager elementManager;
+    private GameLevelConfig levelConfig;
     
-    // Part 1 配置信息 (从gamelevel-config.plist读取)
-    private static final String[] FISH_TYPES = {
-        "fish01", "fish02", "fish03", "fish04", "fish05", "fish06", "fish07", "fish08",
-        "fish09", "fish10", "fish11", "fish12", "fish13", "fish14", "fish15", "fish16"
-    };
-    
-    private static final int[] SHOW_PROBABILITIES = {
-        10, 10, 10, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
-    };
-    
-    private static final long BATCH_SPAWN_INTERVAL = 8000; // 批次生成间隔增加到8秒
-    private static final int MIN_BATCH_SIZE = 1; // 最小批次大小减少到1
-    private static final int MAX_BATCH_SIZE = 3; // 最大批次大小减少到3
+    private static final long BATCH_SPAWN_INTERVAL = 2000;
+    private static final int MIN_BATCH_SIZE = 4;
+    private static final int MAX_BATCH_SIZE = 6;
     
     private FishManager() {
         this.activeFishes = new ArrayList<>();
@@ -45,6 +36,18 @@ public class FishManager {
         return instance;
     }
     
+    /**
+     * 设置关卡配置
+     * 
+     * @param config 关卡配置
+     */
+    public void setLevelConfig(GameLevelConfig config) {
+        this.levelConfig = config;
+        System.out.println("设置关卡配置: Level " + config.part +
+                ", 鱼类数量: " + config.fishTypes.size() +
+                ", 屏幕鱼数: " + config.shoalSumInScreen);
+    }
+
     /**
      * 更新鱼类管理器
      */
@@ -65,7 +68,20 @@ public class FishManager {
      * 批次生成鱼
      */
     private void spawnBatchOfFish() {
-        int batchSize = random.nextInt(MAX_BATCH_SIZE - MIN_BATCH_SIZE + 1) + MIN_BATCH_SIZE;
+        if (levelConfig == null) {
+            System.out.println("警告: 没有关卡配置，跳过鱼类生成");
+            return;
+        }
+
+        // 检查当前屏幕上的鱼数量是否已达到上限
+        if (activeFishes.size() >= levelConfig.shoalSumInScreen) {
+            return;
+        }
+
+        int remainingSlots = levelConfig.shoalSumInScreen - activeFishes.size();
+        int batchSize = Math.min(
+                random.nextInt(MAX_BATCH_SIZE - MIN_BATCH_SIZE + 1) + MIN_BATCH_SIZE,
+                remainingSlots);
         
         // 随机选择从左边还是右边生成
         boolean fromLeft = random.nextBoolean();
@@ -81,25 +97,33 @@ public class FishManager {
      * 生成单条鱼
      */
     private void spawnSingleFish(boolean fromLeft, int offset) {
-        // 计算总概率
-        int totalProbability = 0;
-        for (int prob : SHOW_PROBABILITIES) {
-            totalProbability += prob;
+        if (levelConfig == null || levelConfig.fishTypes.isEmpty()) {
+            return;
         }
+
+        // 计算总概率
+        int totalProbability = levelConfig.showProbabilities.stream().mapToInt(Integer::intValue).sum();
         
         // 根据概率选择鱼的类型
         int randomValue = random.nextInt(totalProbability);
         int currentSum = 0;
         int selectedFishIndex = 0;
         
-        for (int j = 0; j < SHOW_PROBABILITIES.length; j++) {
-            currentSum += SHOW_PROBABILITIES[j];
+        for (int j = 0; j < levelConfig.showProbabilities.size(); j++) {
+            currentSum += levelConfig.showProbabilities.get(j);
             if (randomValue < currentSum) {
                 selectedFishIndex = j;
                 break;
             }
         }
         
+        // 确保索引在有效范围内
+        if (selectedFishIndex >= levelConfig.fishTypes.size()) {
+            selectedFishIndex = levelConfig.fishTypes.size() - 1;
+        }
+
+        String selectedFishType = levelConfig.fishTypes.get(selectedFishIndex);
+
         // 设置位置 - 适配800x500屏幕尺寸
         int x, y;
         if (fromLeft) {
@@ -107,18 +131,17 @@ public class FishManager {
         } else {
             x = 850 + offset; // 从右边生成，适配800像素宽度
         }
-        
-        
+
         // Y坐标设置 - 鱼在屏幕中间偏上区域生成和游动
-        // 屏幕高度500像素，设置鱼活动在中间偏上区域（Y: 50-300）
         y = random.nextInt(200) + 75; // 75-275范围，确保在中间偏上区域
         
         // 根据鱼的类型设置大小
         int width, height;
-        if (selectedFishIndex < 4) { // fish01-fish04 小鱼
+        int fishNumber = Integer.parseInt(selectedFishType.replaceAll("\\D", ""));
+        if (fishNumber <= 4) { // fish01-fish04 小鱼
             width = 40;
             height = 20;
-        } else if (selectedFishIndex < 8) { // fish05-fish08 中等鱼
+        } else if (fishNumber <= 8) { // fish05-fish08 中等鱼
             width = 60;
             height = 40;
         } else { // fish09-fish16 大鱼
@@ -129,8 +152,8 @@ public class FishManager {
         // 创建鱼
         Fish fish = new Fish(
             x, y, width, height, 
-            selectedFishIndex + 1, // 级别从1开始
-            FISH_TYPES[selectedFishIndex]
+                fishNumber, // 级别
+                selectedFishType
         );
         
         // 设置游动方向
@@ -139,7 +162,7 @@ public class FishManager {
         activeFishes.add(fish);
         elementManager.addElement(fish, GameElementType.FISH);
         
-        System.out.println("生成了一条鱼: " + FISH_TYPES[selectedFishIndex] + " 在位置 (" + x + ", " + y + ")");
+        System.out.println("生成了一条鱼: " + selectedFishType + " 在位置 (" + x + ", " + y + ")");
     }
     
     /**
@@ -181,7 +204,15 @@ public class FishManager {
      * 立即生成初始鱼群
      */
     public void spawnInitialFishes() {
-        // 立即生成一批鱼
-        spawnBatchOfFish();
+        if (levelConfig != null) {
+            // 根据关卡配置生成初始鱼群，数量为配置的一半
+            int initialCount = Math.max(1, levelConfig.shoalSumInScreen / 2);
+            for (int i = 0; i < initialCount; i++) {
+                spawnSingleFish(random.nextBoolean(), i * 100);
+            }
+        } else {
+            // 立即生成一批鱼
+            spawnBatchOfFish();
+        }
     }
 }

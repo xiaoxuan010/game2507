@@ -12,9 +12,11 @@ public class GameStateDataManager {
 
     private long gameStartTime; // 游戏开始时间
     private long currentTime; // 当前时间
+    private int gameLevel; // 当前游戏关卡
     private int coins; // 金币数量
     private int score; // 分数
     private int level; // 当前关卡
+    private int gameDuration; // 游戏时长（秒）
 
     private GameStateDataManager() {
         log.info("Initializing GameStateDataManager");
@@ -56,8 +58,7 @@ public class GameStateDataManager {
     }
 
     public int getGameCountdown() {
-        // 假设游戏时间为30秒
-        return Math.max(0, (int) (((gameStartTime + 30000) - System.currentTimeMillis()) / 1000));
+        return Math.max(0, (int) (((gameStartTime + gameDuration * 1000) - System.currentTimeMillis()) / 1000));
     }
 
 }

@@ -1,5 +1,7 @@
 package top.xiaoxuan010.learn.game.state;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import top.xiaoxuan010.learn.game.state.states.BaseGameState;
 import top.xiaoxuan010.learn.game.state.states.GameOverState;
@@ -8,10 +10,13 @@ import top.xiaoxuan010.learn.game.state.states.LoadingState;
 import top.xiaoxuan010.learn.game.state.states.MainMenuState;
 
 @Slf4j
+@Getter
+@Setter
 public class GameStateManager {
     private static GameStateManager instance;
     private GameState currentState;
     private BaseGameState currentStateHandler;
+    private int selectedLevel = 1; // 当前选择的关卡，默认为1
 
     private LoadingState loadingState;
     private MainMenuState mainMenuState;
